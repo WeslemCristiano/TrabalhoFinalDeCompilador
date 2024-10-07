@@ -1,32 +1,31 @@
-﻿using System;
-using System.IO;
-using Antlr4.Runtime;
+﻿using Antlr4.Runtime;
+using Antlr4.Runtime.Tree;
+using lingC;
+using System;
 
-class Program
+ class Program
 {
     static void Main(string[] args)
     {
-        if (args.Length == 0)
-        {
-            Console.WriteLine("Por favor, forneça o caminho para o arquivo .c como argumento.");
-            return;
-        }
+        string input = @"
+            #include <stdio.h>
 
-        string filePath = args[0];
-        if (!File.Exists(filePath))
-        {
-            Console.WriteLine($"Arquivo não encontrado: {filePath}");
-            return;
-        }
+            int main() {
+                int n;
+                printf(""Digite um número: "");
+                scanf(""%d"", &n);
+                printf(""O numero é %d\n"", n);
+                return 0;
+            }
+        ";
 
-        string code = File.ReadAllText(filePath);
-        AntlrInputStream inputStream = new AntlrInputStream(code);
-        CSubsetLexer lexer = new CSubsetLexer(inputStream);
+        AntlrInputStream inputStream = new AntlrInputStream(input);
+        ExprCLexer lexer = new ExprCLexer(inputStream);
         CommonTokenStream commonTokenStream = new CommonTokenStream(lexer);
-        CSubsetParser parser = new CSubsetParser(commonTokenStream);
+        ExprCParser parser = new ExprCParser(commonTokenStream);
 
-        EvalListener listener = new EvalListener();
-        parser.AddParseListener(listener); 
-        parser.program(); 
+        IParseTree tree = parser.program();
+        ExprCVisitorImpl visitor = new ExprCVisitorImpl();
+        visitor.Visit(tree);
     }
 }

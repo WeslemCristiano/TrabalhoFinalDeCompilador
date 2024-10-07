@@ -16,3 +16,4 @@ C:\Users\User\Documents\TrabalhoDeCompilador\CompiladorTianex\bin\Debug\net8.0\A
 C:\Users\User\Documents\TrabalhoDeCompilador\CompiladorTianex\obj\Debug\net8.0\CompiladorTianex.csproj.AssemblyReference.cache
 C:\Users\User\Documents\TrabalhoDeCompilador\CompiladorTianex\obj\Debug\net8.0\Compilad.8407078E.Up2Date
 C:\Users\User\Documents\TrabalhoDeCompilador\CompiladorTianex\bin\Debug\net8.0\JetBrains.Annotations.dll
+C:\Users\User\Documents\TrabalhoDeCompilador\CompiladorTianex\obj\Debug\net8.0\CompiladorTianex.sourcelink.json

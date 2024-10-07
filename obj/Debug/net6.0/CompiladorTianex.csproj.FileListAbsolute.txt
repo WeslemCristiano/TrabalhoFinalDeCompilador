@@ -1,0 +1,5 @@
+C:\Users\User\Documents\TrabalhoDeCompilador\CompiladorTianex\obj\Debug\net6.0\CompiladorTianex.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\User\Documents\TrabalhoDeCompilador\CompiladorTianex\obj\Debug\net6.0\CompiladorTianex.AssemblyInfoInputs.cache
+C:\Users\User\Documents\TrabalhoDeCompilador\CompiladorTianex\obj\Debug\net6.0\CompiladorTianex.AssemblyInfo.cs
+C:\Users\User\Documents\TrabalhoDeCompilador\CompiladorTianex\obj\Debug\net6.0\CompiladorTianex.csproj.CoreCompileInputs.cache
+C:\Users\User\Documents\TrabalhoDeCompilador\CompiladorTianex\obj\Debug\net6.0\CompiladorTianex.sourcelink.json

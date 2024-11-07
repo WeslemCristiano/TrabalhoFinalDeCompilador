@@ -1,23 +1,35 @@
-﻿using Antlr4.Runtime;
+﻿using System;
+using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using lingC;
-using System;
 
- class Program
+class Program
 {
     static void Main(string[] args)
     {
         string input = @"
-            #include <stdio.h>
+    #include <stdio.h>
 
-            int main() {
-                int n;
-                printf(""Digite um número: "");
-                scanf(""%d"", &n);
-                printf(""O numero é %d\n"", n);
-                return 0;
-            }
-        ";
+    int main() {
+        int a = 5;
+        int b = 10;
+        int c = 15;
+
+        if (a < b && b < c) {
+            printf(""a < b && b < c é verdadeiro\n"");
+        }
+
+        if (a > b || b < c) {
+            printf(""a > b || b < c é verdadeiro\n"");
+        }
+
+        if (a == 5 && b != 10) {
+            printf(""a == 5 && b != 10 é verdadeiro\n"");
+        }
+
+        return 0;
+    }
+";
 
         AntlrInputStream inputStream = new AntlrInputStream(input);
         ExprCLexer lexer = new ExprCLexer(inputStream);

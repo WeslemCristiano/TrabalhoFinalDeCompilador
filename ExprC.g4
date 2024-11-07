@@ -142,6 +142,10 @@ type
     | 'float'
     | 'void'
     | 'char'
+    | 'double'
+    | 'short'
+    | 'long'
+    | 'unsigned'
     ;
 
 // Expressões
@@ -188,7 +192,7 @@ multiplicativeExpression
 // Expressões unárias
 unaryExpression
     : primaryExpression
-    | ('+' | '-' | '!') unaryExpression
+    | ('+' | '-' | '!' | '++' | '--') unaryExpression
     ;
 
 // Expressões primárias
@@ -197,6 +201,7 @@ primaryExpression
     | CONSTANT
     | STRING_LITERAL
     | '(' expression ')'
+    | 'sizeof' '(' type ')'
     ;
 
 // Tokens

@@ -11,22 +11,10 @@ class Program
     #include <stdio.h>
 
     int main() {
-        int a = 5;
-        int b = 10;
-        int c = 15;
+        int i = 0;
 
-        if (a < b && b < c) {
-            printf(""a < b && b < c é verdadeiro\n"");
-        }
-
-        if (a > b || b < c) {
-            printf(""a > b || b < c é verdadeiro\n"");
-        }
-
-        if (a == 5 && b != 10) {
-            printf(""a == 5 && b != 10 é verdadeiro\n"");
-        } else {
-            printf(""a == 5 && b != 10 é falso\n"");
+        for (i = 0; i < 10; i = i + 1) {
+            printf(""Hello, World!\n"");
         }
 
         return 0;

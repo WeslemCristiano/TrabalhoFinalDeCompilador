@@ -20,12 +20,13 @@ namespace lingC
             else
             {
                 memory[varName] = null;
-               // Console.WriteLine($"Variável '{varName}' declarada sem inicialização."); // Para debug
+                //Console.WriteLine($"Variável '{varName}' declarada sem inicialização."); // Para debug
             }
 
             return null;
         }
-          // Declaração de expressão matemática(adição e subtração)
+
+        // Declaração de expressão matemática (adição e subtração)
         public override object? VisitAdditiveExpression(ExprCParser.AdditiveExpressionContext context)
         {
             object? left = Visit(context.multiplicativeExpression(0));
@@ -43,7 +44,7 @@ namespace lingC
             return base.VisitAdditiveExpression(context);
         }
 
-       // Declaração de expressão matemática(multiplicação, divisão e módulo)
+        // Declaração de expressão matemática (multiplicação, divisão e módulo)
         public override object? VisitMultiplicativeExpression(ExprCParser.MultiplicativeExpressionContext context)
         {
             object? left = Visit(context.unaryExpression(0));
@@ -108,7 +109,7 @@ namespace lingC
             return value;
         }
 
-        // Declaração de expressão lógica(ou)
+        // Declaração de expressão lógica (ou)
         public override object? VisitLogicalOrExpression(ExprCParser.LogicalOrExpressionContext context)
         {
             object? left = Visit(context.logicalAndExpression(0));
@@ -122,7 +123,7 @@ namespace lingC
             return base.VisitLogicalOrExpression(context);
         }
 
-        // Declaração de expressão lógica(e)
+        // Declaração de expressão lógica (e)
         public override object? VisitLogicalAndExpression(ExprCParser.LogicalAndExpressionContext context)
         {
             object? left = Visit(context.equalityExpression(0));
@@ -136,7 +137,7 @@ namespace lingC
             return base.VisitLogicalAndExpression(context);
         }
 
-       // Declaração de expressão lógica(igualdade e diferença)
+        // Declaração de expressão lógica (igualdade e diferença)
         public override object? VisitEqualityExpression(ExprCParser.EqualityExpressionContext context)
         {
             object? left = Visit(context.relationalExpression(0));
@@ -154,7 +155,7 @@ namespace lingC
             return base.VisitEqualityExpression(context);
         }
 
-         // Declaração de expressão relacional(menor, menor ou igual, maior e maior ou igual)
+        // Declaração de expressão relacional (menor, menor ou igual, maior e maior ou igual)
         public override object? VisitRelationalExpression(ExprCParser.RelationalExpressionContext context)
         {
             object? left = Visit(context.additiveExpression(0));
@@ -180,7 +181,7 @@ namespace lingC
             return base.VisitRelationalExpression(context);
         }
 
-       // Declaração de expressão primária
+        // Declaração de expressão primária
         public override object? VisitPrimaryExpression(ExprCParser.PrimaryExpressionContext context)
         {
             if (context.CONSTANT() != null)
@@ -205,6 +206,7 @@ namespace lingC
                 return Visit(context.expression());
             }
         }
+
         // Declaração if
         public override object? VisitIfStatement(ExprCParser.IfStatementContext context)
         {
@@ -221,8 +223,8 @@ namespace lingC
 
             return null;
         }
-       
-       // Declaração do while
+
+        // Declaração do while
         public override object? VisitWhileStatement(ExprCParser.WhileStatementContext context)
         {
             while (Convert.ToBoolean(Visit(context.expression())))
@@ -232,7 +234,8 @@ namespace lingC
 
             return null;
         }
-           // Declaração do do while
+
+        // Declaração do do while
         public override object? VisitDoWhileStatement(ExprCParser.DoWhileStatementContext context)
         {
             do
@@ -242,21 +245,29 @@ namespace lingC
 
             return null;
         }
-         // Declaração do for
+
+        // Declaração do for
         public override object? VisitForStatement(ExprCParser.ForStatementContext context)
         {
-            for (Visit(context.expression(0)); Convert.ToBoolean(Visit(context.expression(1))); Visit(context.expression(2)))
+            // Inicialização
+            Visit(context.expression(0));
+
+            // Condição e corpo do loop
+            while (context.expression(1) == null || Convert.ToBoolean(Visit(context.expression(1))))
             {
                 Visit(context.statement());
+
+                // Atualização
+                if (context.expression(2) != null)
+                {
+                    Visit(context.expression(2));
+                }
             }
 
             return null;
         }
 
-        // Declaração do switch
-          
-
-       // Declaração do bloco
+        // Declaração do bloco
         public override object? VisitBlock(ExprCParser.BlockContext context)
         {
             foreach (var statement in context.statement())
@@ -267,7 +278,7 @@ namespace lingC
             return null;
         }
 
-          // Declaração de atribuição
+        // Declaração de atribuição
         public override object? VisitAssignmentExpression(ExprCParser.AssignmentExpressionContext context)
         {
             if (context.ChildCount == 3)
@@ -283,7 +294,7 @@ namespace lingC
             }
         }
 
-          // Instruções de printf
+        // Instruções de printf
         public override object? VisitPrintfStatement(ExprCParser.PrintfStatementContext context)
         {
             string format = context.STRING_LITERAL().GetText();
@@ -311,7 +322,7 @@ namespace lingC
             return null;
         }
 
-           // Instruções de scanf
+        // Instruções de scanf
         public override object? VisitScanfStatement(ExprCParser.ScanfStatementContext context)
         {
             string format = context.STRING_LITERAL().GetText();
@@ -330,13 +341,16 @@ namespace lingC
                         else if (format.Contains("%f") && float.TryParse(input, out float floatValue))
                         {
                             memory[varName] = floatValue;
-                        }else if (format.Contains("%c") && char.TryParse(input, out char charValue))
+                        }
+                        else if (format.Contains("%c") && char.TryParse(input, out char charValue))
                         {
                             memory[varName] = charValue;
-                        }else if (format.Contains("%s"))
+                        }
+                        else if (format.Contains("%s"))
                         {
                             memory[varName] = input;
-                        }else
+                        }
+                        else
                         {
                             memory[varName] = input;
                         }

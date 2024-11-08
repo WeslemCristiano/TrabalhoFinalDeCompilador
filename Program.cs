@@ -25,6 +25,8 @@ class Program
 
         if (a == 5 && b != 10) {
             printf(""a == 5 && b != 10 é verdadeiro\n"");
+        } else {
+            printf(""a == 5 && b != 10 é falso\n"");
         }
 
         return 0;

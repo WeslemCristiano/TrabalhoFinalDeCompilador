@@ -294,6 +294,18 @@ namespace lingC
             }
         }
 
+        // Declaração return
+        public override object? VisitReturnStatement(ExprCParser.ReturnStatementContext context)
+        {
+            //Para retornar um valor que deu certo
+            if (context.expression() != null)
+            {
+                return Visit(context.expression());
+            }else{
+                return null;
+            }
+        }
+
         // Instruções de printf
         public override object? VisitPrintfStatement(ExprCParser.PrintfStatementContext context)
         {

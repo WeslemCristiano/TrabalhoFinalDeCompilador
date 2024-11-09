@@ -7,19 +7,24 @@ class Program
 {
     static void Main(string[] args)
     {
-        string input = @"
-    #include <stdio.h>
 
-    int main() {
-        int i = 0;
-
-        for (i = 0; i < 10; i = i + 1) {
-            printf(""Hello, World!\n"");
+     if (args.Length == 0)
+        {
+            Console.WriteLine();
+            Console.WriteLine("Por favor, forneça o caminho para o arquivo .Tianex!!!\n");
+            return;
         }
 
-        return 0;
-    }
-";
+        string filePath = args[0];
+
+        if (!File.Exists(filePath))
+        {
+            Console.WriteLine($"Arquivo não encontrado: {filePath}");
+            return;
+        }
+
+        string input = File.ReadAllText(filePath);
+
 
         AntlrInputStream inputStream = new AntlrInputStream(input);
         ExprCLexer lexer = new ExprCLexer(inputStream);
@@ -31,3 +36,18 @@ class Program
         visitor.Visit(tree);
     }
 }
+
+// Para de debugar o código         
+//         string input = @"
+//     #include <stdio.h>
+
+//     int main() {
+//         int a = 5;
+//         int b = 10;
+//         int c = a + b;
+
+//         printf(""Hello, World! %d\n"", c);
+
+//         return 0;
+//     }
+// ";

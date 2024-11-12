@@ -20,6 +20,7 @@ class Program
         if (!File.Exists(filePath))
         {
             Console.WriteLine($"Arquivo não encontrado: {filePath}");
+            
             return;
         }
 

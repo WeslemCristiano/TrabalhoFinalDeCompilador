@@ -74,23 +74,29 @@ public interface IExprCVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitVariableDeclaration([NotNull] ExprCParser.VariableDeclarationContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="ExprCParser.arrayInitializer"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitArrayInitializer([NotNull] ExprCParser.ArrayInitializerContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="ExprCParser.structDeclaration"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitStructDeclaration([NotNull] ExprCParser.StructDeclarationContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="ExprCParser.structMember"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitStructMember([NotNull] ExprCParser.StructMemberContext context);
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="ExprCParser.unionDeclaration"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitUnionDeclaration([NotNull] ExprCParser.UnionDeclarationContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="ExprCParser.structMember"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitStructMember([NotNull] ExprCParser.StructMemberContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="ExprCParser.unionMember"/>.
 	/// </summary>
@@ -194,6 +200,12 @@ public interface IExprCVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitExpression([NotNull] ExprCParser.ExpressionContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="ExprCParser.conditionalExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitConditionalExpression([NotNull] ExprCParser.ConditionalExpressionContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="ExprCParser.assignmentExpression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -247,4 +259,16 @@ public interface IExprCVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitPrimaryExpression([NotNull] ExprCParser.PrimaryExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="ExprCParser.functionCall"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitFunctionCall([NotNull] ExprCParser.FunctionCallContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="ExprCParser.argumentList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitArgumentList([NotNull] ExprCParser.ArgumentListContext context);
 }

@@ -1,18 +1,21 @@
 grammar ExprC;
 
 // Entrypoint
-program : preprocessorDirective* (declaration | statement)* EOF;
+program : preprocessorDirective* (declaration | functionDeclaration)* mainFunction;
 
 // Diretivas de pré-processamento
 preprocessorDirective
     : '#' 'include' '<' HEADER_FILE '>'
-    | '#' 'define' IDENTIFIER (CONSTANT | expression)?
+    ;
+
+mainFunction
+    : 'int' 'main' '(' ')' block
     ;
 
 // Declarações
 declaration
-    : functionDeclaration
-    | variableDeclaration
+    : variableDeclaration
+    | statement
     | structDeclaration
     | unionDeclaration
     ;
@@ -20,42 +23,39 @@ declaration
 // Declarações de função
 functionDeclaration
     : type IDENTIFIER '(' parameterList? ')' block
-    | 'void' IDENTIFIER '(' parameterList? ')' block
-    | 'int' 'main' '(' parameterList? ')' block
     ;
 
-// Lista de parâmetros com suporte a arrays
+// Lista de parâmetros
 parameterList
     : parameter (',' parameter)*
     ;
 
+// Parâmetro
 parameter
-    : type IDENTIFIER ('[' ']')?
+    : type IDENTIFIER
     ;
 
-// Declaração de variável com suporte a vetores e inicialização
+// Declaração de variável
 variableDeclaration
-    : type IDENTIFIER ('[' CONSTANT ']')? ('=' arrayInitializer | '=' expression)? ';'
+    : type IDENTIFIER ('=' expression)? ';'
     ;
 
-// Inicializador de array
-arrayInitializer
-    : '{' expression (',' expression)* '}'
-    ;
-
-// Declaração de struct e union
+// Declaração de struct
 structDeclaration
     : 'struct' IDENTIFIER '{' structMember* '}' ';'
     ;
 
-unionDeclaration
-    : 'union' IDENTIFIER '{' unionMember* '}' ';'
-    ;
-
+// Membros de struct
 structMember
     : type IDENTIFIER ('[' CONSTANT ']')? ';'
     ;
 
+// Declaração de union
+unionDeclaration
+    : 'union' IDENTIFIER '{' unionMember* '}' ';'
+    ;
+
+// Membros de union
 unionMember
     : type IDENTIFIER ('[' CONSTANT ']')? ';'
     ;
@@ -78,6 +78,8 @@ statement
     | switchStatement
     | scanfStatement
     | printfStatement
+    | chamadaStatement ';'
+    | returnStatement
     ;
 
 // Expressão de instrução
@@ -85,24 +87,27 @@ expressionStatement
     : expression ';'
     ;
 
-// Instruções de printf e scanf com múltiplos argumentos
+// Instruções de printf
 printfStatement
-    : 'printf' '(' STRING_LITERAL (',' expression)* ')' ';'
+    : 'printf' '(' expression (',' expression)* ')' ';'
     ;
 
+// Instruções de scanf
 scanfStatement
     : 'scanf' '(' STRING_LITERAL (',' '&' IDENTIFIER)* ')' ';'
     ;
 
-// Declarações de bloco, controle e laços
+// Bloco de instruções
 blockStatement
     : '{' statement* '}'
     ;
 
+// Declaração if
 ifStatement
     : 'if' '(' expression ')' statement ( 'else' statement )?
     ;
 
+// Declaração switch
 switchStatement
     : 'switch' '(' expression ')' '{' caseStatement* defaultStatement? '}'
     ;
@@ -115,35 +120,46 @@ defaultStatement
     : 'default' ':' statement*
     ;
 
+// Declaração for
 forStatement
     : 'for' '(' expression? ';' expression? ';' expression? ')' statement
     ;
 
+// Declaração while
 whileStatement
     : 'while' '(' expression ')' statement
     ;
 
+// Declaração do-while
 doWhileStatement
     : 'do' statement 'while' '(' expression ')' ';'
     ;
 
+// Chamada de função
+chamadaStatement
+    : IDENTIFIER '(' (expression (',' expression)*)? ')'
+    ;    
+
+// Declaração return
 returnStatement
     : 'return' expression? ';'
     ;
 
-// Tipos com suporte a ponteiros e qualificadores de tipo
+// Tipos
 type
-    : ('int' | 'float' | 'void' | 'char' | 'double' | 'short' | 'long' | 'unsigned') ('*')*
+    : 'int'
+    | 'float'
+    | 'void'
+    | 'char'
+    | 'double'
+    | 'short'
+    | 'long'
+    | 'unsigned'
     ;
 
 // Expressões
 expression
     : assignmentExpression
-    ;
-
-// Expressão condicional (operador ternário)
-conditionalExpression
-    : logicalOrExpression ('?' expression ':' expression)?
     ;
 
 // Expressões de atribuição
@@ -157,31 +173,35 @@ logicalOrExpression
     : logicalAndExpression ( '||' logicalAndExpression )*
     ;
 
+// Expressões lógicas e
 logicalAndExpression
     : equalityExpression ( '&&' equalityExpression )*
     ;
 
+// Expressões de igualdade
 equalityExpression
     : relationalExpression ( ( '==' | '!=' ) relationalExpression )*
     ;
 
+// Expressões relacionais
 relationalExpression
     : additiveExpression ( ( '<' | '>' | '<=' | '>=' ) additiveExpression )*
     ;
 
+// Expressões aditivas
 additiveExpression
     : multiplicativeExpression ( ( '+' | '-' ) multiplicativeExpression )*
     ;
 
+// Expressões multiplicativas
 multiplicativeExpression
     : unaryExpression ( ( '*' | '/' | '%' ) unaryExpression )*
     ;
 
-// Expressões unárias com casting e ponteiros
+// Expressões unárias
 unaryExpression
-    : '(' type ')' unaryExpression
-    | primaryExpression
-    | ('+' | '-' | '!' | '++' | '--' | '*' | '&') unaryExpression
+    : primaryExpression
+    | ('+' | '-' | '!' | '++' | '--') unaryExpression
     ;
 
 // Expressões primárias
@@ -190,17 +210,7 @@ primaryExpression
     | CONSTANT
     | STRING_LITERAL
     | '(' expression ')'
-    | 'sizeof' '(' type ')'
-    | functionCall
-    ;
-
-// Chamadas de função com lista de argumentos
-functionCall
-    : IDENTIFIER '(' argumentList? ')'
-    ;
-
-argumentList
-    : expression (',' expression)*
+    |'sizeof' '(' type ')'
     ;
 
 // Tokens

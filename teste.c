@@ -1,9 +1,14 @@
-# include <stdio.h>
 
-int main() {
-  int a = 10;
-    int b = 20;
-    int c = a + b;
-    printf("Soma %d\n", c);
+int soma(int a, int b) {
+    a = a + b;
+    printf(a);
+    
 }
 
+int main() {
+    int i = 0;
+
+    for(i = 0; i < 10; i = i + 1) {
+        printf(i);
+    }
+}

@@ -51,6 +51,16 @@ public interface IExprCListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitPreprocessorDirective([NotNull] ExprCParser.PreprocessorDirectiveContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="ExprCParser.mainFunction"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterMainFunction([NotNull] ExprCParser.MainFunctionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ExprCParser.mainFunction"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitMainFunction([NotNull] ExprCParser.MainFunctionContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="ExprCParser.declaration"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -101,16 +111,6 @@ public interface IExprCListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitVariableDeclaration([NotNull] ExprCParser.VariableDeclarationContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="ExprCParser.arrayInitializer"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterArrayInitializer([NotNull] ExprCParser.ArrayInitializerContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="ExprCParser.arrayInitializer"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitArrayInitializer([NotNull] ExprCParser.ArrayInitializerContext context);
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="ExprCParser.structDeclaration"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -121,16 +121,6 @@ public interface IExprCListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitStructDeclaration([NotNull] ExprCParser.StructDeclarationContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="ExprCParser.unionDeclaration"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterUnionDeclaration([NotNull] ExprCParser.UnionDeclarationContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="ExprCParser.unionDeclaration"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitUnionDeclaration([NotNull] ExprCParser.UnionDeclarationContext context);
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="ExprCParser.structMember"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -140,6 +130,16 @@ public interface IExprCListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitStructMember([NotNull] ExprCParser.StructMemberContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ExprCParser.unionDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterUnionDeclaration([NotNull] ExprCParser.UnionDeclarationContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ExprCParser.unionDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitUnionDeclaration([NotNull] ExprCParser.UnionDeclarationContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="ExprCParser.unionMember"/>.
 	/// </summary>
@@ -281,6 +281,16 @@ public interface IExprCListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitDoWhileStatement([NotNull] ExprCParser.DoWhileStatementContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="ExprCParser.chamadaStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterChamadaStatement([NotNull] ExprCParser.ChamadaStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ExprCParser.chamadaStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitChamadaStatement([NotNull] ExprCParser.ChamadaStatementContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="ExprCParser.returnStatement"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -310,16 +320,6 @@ public interface IExprCListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitExpression([NotNull] ExprCParser.ExpressionContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="ExprCParser.conditionalExpression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterConditionalExpression([NotNull] ExprCParser.ConditionalExpressionContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="ExprCParser.conditionalExpression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitConditionalExpression([NotNull] ExprCParser.ConditionalExpressionContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="ExprCParser.assignmentExpression"/>.
 	/// </summary>
@@ -410,24 +410,4 @@ public interface IExprCListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitPrimaryExpression([NotNull] ExprCParser.PrimaryExpressionContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="ExprCParser.functionCall"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterFunctionCall([NotNull] ExprCParser.FunctionCallContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="ExprCParser.functionCall"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitFunctionCall([NotNull] ExprCParser.FunctionCallContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="ExprCParser.argumentList"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterArgumentList([NotNull] ExprCParser.ArgumentListContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="ExprCParser.argumentList"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitArgumentList([NotNull] ExprCParser.ArgumentListContext context);
 }

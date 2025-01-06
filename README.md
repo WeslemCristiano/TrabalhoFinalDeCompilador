@@ -128,5 +128,5 @@ int main() {
 ---
 
 ## **Autores**
-- **Aluno: Weslem Cristiano de Oliveira
-- **Aluno: Giovanni
+- **Aluno:** Weslem Cristiano de Oliveira
+- **Aluno:** Giovanni

@@ -37,7 +37,7 @@ parameter
 
 // Declaração de variável
 variableDeclaration
-    : type IDENTIFIER ('=' expression)? ';'
+    : type IDENTIFIER ('[' CONSTANT ']')? ('=' expression)? ';'
     ;
 
 // Declaração de struct
@@ -89,12 +89,12 @@ expressionStatement
 
 // Instruções de printf
 printfStatement
-    : 'printf' '(' expression (',' expression)* ')' ';'
+    : 'printf' '(' (expression | STRING_LITERAL) (',' expression)* ')' ';'
     ;
 
 // Instruções de scanf
 scanfStatement
-    : 'scanf' '(' STRING_LITERAL (',' '&' IDENTIFIER)* ')' ';'
+    : 'scanf' '(' STRING_LITERAL (',' ('&'? IDENTIFIER))* ')' ';'
     ;
 
 // Bloco de instruções
@@ -142,7 +142,7 @@ chamadaStatement
 
 // Declaração return
 returnStatement
-    : 'return' expression? ';'
+    : 'return' (expression)? ';'
     ;
 
 // Tipos

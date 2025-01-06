@@ -115,7 +115,7 @@ namespace lingC
             return base.VisitAdditiveExpression(context);
         }
 
-         // Declaração de expressão matemática (multiplicação, divisão e módulo)
+        // Declaração de expressão matemática (multiplicação, divisão e módulo)
         public override object? VisitMultiplicativeExpression(ExprCParser.MultiplicativeExpressionContext context)
         {
             object? left = Visit(context.unaryExpression(0));
@@ -201,6 +201,11 @@ namespace lingC
                     throw new Exception($"Erro: Variável '{varName}' não declarada.");
                 }
             }
+            else if (context.STRING_LITERAL() != null)
+            {
+                // Retorna o literal de string sem as aspas
+                return context.STRING_LITERAL().GetText().Trim('"');
+            }
             else
             {
                 // Caso seja uma expressão entre parênteses
@@ -208,7 +213,7 @@ namespace lingC
             }
         }
 
-                // Declaração de expressão lógica (ou)
+        // Declaração de expressão lógica (ou)
         public override object? VisitLogicalOrExpression(ExprCParser.LogicalOrExpressionContext context)
         {
             object? left = Visit(context.logicalAndExpression(0));
@@ -236,7 +241,7 @@ namespace lingC
             return base.VisitLogicalAndExpression(context);
         }
 
-                // Declaração de expressão lógica (igualdade e diferença)
+        // Declaração de expressão lógica (igualdade e diferença)
         public override object? VisitEqualityExpression(ExprCParser.EqualityExpressionContext context)
         {
             object? left = Visit(context.relationalExpression(0));
@@ -254,7 +259,7 @@ namespace lingC
             return base.VisitEqualityExpression(context);
         }
 
-         // Declaração de expressão relacional (menor, menor ou igual, maior e maior ou igual)
+        // Declaração de expressão relacional (menor, menor ou igual, maior e maior ou igual)
         public override object? VisitRelationalExpression(ExprCParser.RelationalExpressionContext context)
         {
             object? left = Visit(context.additiveExpression(0));
@@ -280,7 +285,7 @@ namespace lingC
             return base.VisitRelationalExpression(context);
         }
 
-        
+
 
         // Declaração if
         public override object? VisitIfStatement(ExprCParser.IfStatementContext context)
@@ -321,7 +326,7 @@ namespace lingC
             return null;
         }
 
- // Declaração do for
+        // Declaração do for
         public override object? VisitForStatement(ExprCParser.ForStatementContext context)
         {
             // Inicialização
@@ -372,13 +377,22 @@ namespace lingC
             // Imprimir os argumentos
             foreach (var arg in args)
             {
-                Console.WriteLine(arg);
+                if (arg is string str)
+                {
+                    Console.Write(str.Replace("\\n", "\n"));
+                }
+                else
+                {
+                    Console.WriteLine(arg);
+                }
             }
 
             return null;
         }
 
-        // Instruções de scanf
+
+
+        // Visitando instruções scanf
         public override object? VisitScanfStatement(ExprCParser.ScanfStatementContext context)
         {
             string format = context.STRING_LITERAL().GetText();
@@ -390,6 +404,7 @@ namespace lingC
                     string? input = Console.ReadLine();
                     if (input != null)
                     {
+                        // Verificar o tipo esperado (int ou float)
                         if (format.Contains("%d") && int.TryParse(input, out int intValue))
                         {
                             memory[varName] = intValue;
@@ -398,17 +413,9 @@ namespace lingC
                         {
                             memory[varName] = floatValue;
                         }
-                        else if (format.Contains("%c") && char.TryParse(input, out char charValue))
-                        {
-                            memory[varName] = charValue;
-                        }
-                        else if (format.Contains("%s"))
-                        {
-                            memory[varName] = input;
-                        }
                         else
                         {
-                            memory[varName] = input;
+                            memory[varName] = input;  // Para outras entradas, armazenar como string
                         }
                     }
                 }

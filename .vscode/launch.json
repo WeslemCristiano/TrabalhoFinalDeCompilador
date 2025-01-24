@@ -7,7 +7,7 @@
     "name": "Debug ANTLR4 grammar",
     "type": "antlr-debug",
     "request": "launch",
-    "input": "teste.c",
+    "input": "Testes/função.c",
     "grammar": "ExprC.g4",
     "printParseTree": true,
     "visualParseTree": true

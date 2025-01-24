@@ -446,5 +446,39 @@ namespace lingC
             }
             return null;
         }
+      
+        // Visitando declarações de ponteiros
+        public override object? VisitPointerDeclaration(ExprCParser.PointerDeclarationContext context)
+        {
+            string varName = context.IDENTIFIER(0).GetText();
+            string pointedVarName = context.IDENTIFIER(1).GetText();
+
+            if (memory.TryGetValue(pointedVarName, out object? pointedValue))
+            {
+                memory[varName] = pointedValue;
+                Console.WriteLine($"Ponteiro '{varName}' inicializado apontando para '{pointedVarName}' com valor: {pointedValue}");
+            }
+            else
+            {
+                throw new Exception($"Erro: Variável '{pointedVarName}' não declarada.");
+            }
+
+            return null;
+        }
+
+         // Visitando declarações ternárias
+        public override object? VisitTernaryStatement(ExprCParser.TernaryStatementContext context)
+        {
+            string varName = context.IDENTIFIER().GetText();
+            object? condition = Visit(context.expression(0));
+            object? trueExpr = Visit(context.expression(1));
+            object? falseExpr = Visit(context.expression(2));
+
+            memory[varName] = Convert.ToBoolean(condition) ? trueExpr : falseExpr;
+            Console.WriteLine($"Variável '{varName}' inicializada com valor: {memory[varName]}");
+
+            return null;
+        }
+
     }
 }

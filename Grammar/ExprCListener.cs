@@ -111,6 +111,16 @@ public interface IExprCListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitVariableDeclaration([NotNull] ExprCParser.VariableDeclarationContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="ExprCParser.variableDeclarator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterVariableDeclarator([NotNull] ExprCParser.VariableDeclaratorContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ExprCParser.variableDeclarator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitVariableDeclarator([NotNull] ExprCParser.VariableDeclaratorContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="ExprCParser.structDeclaration"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -300,6 +310,26 @@ public interface IExprCListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitReturnStatement([NotNull] ExprCParser.ReturnStatementContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ExprCParser.pointerDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterPointerDeclaration([NotNull] ExprCParser.PointerDeclarationContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ExprCParser.pointerDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitPointerDeclaration([NotNull] ExprCParser.PointerDeclarationContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ExprCParser.ternaryStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterTernaryStatement([NotNull] ExprCParser.TernaryStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ExprCParser.ternaryStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitTernaryStatement([NotNull] ExprCParser.TernaryStatementContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="ExprCParser.type"/>.
 	/// </summary>

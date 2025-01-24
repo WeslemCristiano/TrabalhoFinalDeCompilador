@@ -80,6 +80,12 @@ public interface IExprCVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitVariableDeclaration([NotNull] ExprCParser.VariableDeclarationContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="ExprCParser.variableDeclarator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitVariableDeclarator([NotNull] ExprCParser.VariableDeclaratorContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="ExprCParser.structDeclaration"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -193,6 +199,18 @@ public interface IExprCVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitReturnStatement([NotNull] ExprCParser.ReturnStatementContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="ExprCParser.pointerDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitPointerDeclaration([NotNull] ExprCParser.PointerDeclarationContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="ExprCParser.ternaryStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitTernaryStatement([NotNull] ExprCParser.TernaryStatementContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="ExprCParser.type"/>.
 	/// </summary>

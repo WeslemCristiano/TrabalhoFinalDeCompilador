@@ -132,6 +132,18 @@ public partial class ExprCBaseListener : IExprCListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitVariableDeclaration([NotNull] ExprCParser.VariableDeclarationContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="ExprCParser.variableDeclarator"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterVariableDeclarator([NotNull] ExprCParser.VariableDeclaratorContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ExprCParser.variableDeclarator"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitVariableDeclarator([NotNull] ExprCParser.VariableDeclaratorContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="ExprCParser.structDeclaration"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -359,6 +371,30 @@ public partial class ExprCBaseListener : IExprCListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitReturnStatement([NotNull] ExprCParser.ReturnStatementContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ExprCParser.pointerDeclaration"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterPointerDeclaration([NotNull] ExprCParser.PointerDeclarationContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ExprCParser.pointerDeclaration"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitPointerDeclaration([NotNull] ExprCParser.PointerDeclarationContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ExprCParser.ternaryStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterTernaryStatement([NotNull] ExprCParser.TernaryStatementContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ExprCParser.ternaryStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitTernaryStatement([NotNull] ExprCParser.TernaryStatementContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="ExprCParser.type"/>.
 	/// <para>The default implementation does nothing.</para>

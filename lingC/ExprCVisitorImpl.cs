@@ -79,62 +79,71 @@ namespace lingC
         // Visitando declarações de variáveis
         public override object? VisitVariableDeclaration(ExprCParser.VariableDeclarationContext context)
         {
-            string varName = context.IDENTIFIER().GetText();
+            foreach (var declarator in context.variableDeclarator())
+            {
+                string varName = declarator.IDENTIFIER().GetText();
 
-            if (context.expression() != null)
-            {
-                // Avalia a expressão do lado direito da atribuição
-                object? value = Visit(context.expression());
-                memory[varName] = value;
-                Console.WriteLine($"Variável '{varName}' inicializada com valor: {value}");
-            }
-            else
-            {
-                memory[varName] = null;
-                Console.WriteLine($"Variável '{varName}' declarada sem inicialização.");
+                if (declarator.expression() != null)
+                {
+                    // Avalia a expressão do lado direito da atribuição
+                    object? value = Visit(declarator.expression());
+                    memory[varName] = value;
+                    Console.WriteLine($"Variável '{varName}' inicializada com valor: {value}"); // Para depuração
+                }
+                else
+                {
+                    memory[varName] = null;
+                    Console.WriteLine($"Variável '{varName}' declarada sem inicialização."); // Para depuração
+                }
             }
 
             return null;
         }
 
-        // Visitando expressões aritméticas (adição e subtração)
+       // Visitando expressões aritméticas (adição e subtração)
         public override object? VisitAdditiveExpression(ExprCParser.AdditiveExpressionContext context)
         {
-            object? left = Visit(context.multiplicativeExpression(0));
-            object? right = context.multiplicativeExpression().Length > 1 ? Visit(context.multiplicativeExpression(1)) : 0;
+            object? result = Visit(context.multiplicativeExpression(0));
 
-            if (context.GetChild(1) != null && context.GetChild(1).GetText() == "+")
+            for (int i = 1; i < context.multiplicativeExpression().Length; i++)
             {
-                return Convert.ToDouble(left) + Convert.ToDouble(right);
-            }
-            else if (context.GetChild(1) != null && context.GetChild(1).GetText() == "-")
-            {
-                return Convert.ToDouble(left) - Convert.ToDouble(right);
+                object? right = Visit(context.multiplicativeExpression(i));
+                if (context.GetChild(2 * i - 1).GetText() == "+")
+                {
+                    result = Convert.ToDouble(result) + Convert.ToDouble(right);
+                }
+                else if (context.GetChild(2 * i - 1).GetText() == "-")
+                {
+                    result = Convert.ToDouble(result) - Convert.ToDouble(right);
+                }
             }
 
-            return base.VisitAdditiveExpression(context);
+            return result;
         }
 
         // Declaração de expressão matemática (multiplicação, divisão e módulo)
         public override object? VisitMultiplicativeExpression(ExprCParser.MultiplicativeExpressionContext context)
         {
-            object? left = Visit(context.unaryExpression(0));
-            object? right = context.unaryExpression().Length > 1 ? Visit(context.unaryExpression(1)) : 1;
+            object? result = Visit(context.unaryExpression(0));
 
-            if (context.GetChild(1) != null && context.GetChild(1).GetText() == "*")
+            for (int i = 1; i < context.unaryExpression().Length; i++)
             {
-                return Convert.ToDouble(left) * Convert.ToDouble(right);
-            }
-            else if (context.GetChild(1) != null && context.GetChild(1).GetText() == "/")
-            {
-                return Convert.ToDouble(left) / Convert.ToDouble(right);
-            }
-            else if (context.GetChild(1) != null && context.GetChild(1).GetText() == "%")
-            {
-                return Convert.ToDouble(left) % Convert.ToDouble(right);
+                object? right = Visit(context.unaryExpression(i));
+                if (context.GetChild(2 * i - 1).GetText() == "*")
+                {
+                    result = Convert.ToDouble(result) * Convert.ToDouble(right);
+                }
+                else if (context.GetChild(2 * i - 1).GetText() == "/")
+                {
+                    result = Convert.ToDouble(result) / Convert.ToDouble(right);
+                }
+                else if (context.GetChild(2 * i - 1).GetText() == "%")
+                {
+                    result = Convert.ToDouble(result) % Convert.ToDouble(right);
+                }
             }
 
-            return base.VisitMultiplicativeExpression(context);
+            return result;
         }
 
         // Declaração de expressão unária
@@ -180,7 +189,9 @@ namespace lingC
             return value;
         }
 
-        // Visitando constantes (números inteiros e floats) dentro da expressão primária
+        
+
+       // Visitando constantes (números inteiros e floats) dentro da expressão primária
         public override object? VisitPrimaryExpression(ExprCParser.PrimaryExpressionContext context)
         {
             if (context.CONSTANT() != null)
@@ -211,7 +222,7 @@ namespace lingC
                 // Caso seja uma expressão entre parênteses
                 return Visit(context.expression());
             }
-        }
+        } 
 
         // Declaração de expressão lógica (ou)
         public override object? VisitLogicalOrExpression(ExprCParser.LogicalOrExpressionContext context)
@@ -284,8 +295,6 @@ namespace lingC
 
             return base.VisitRelationalExpression(context);
         }
-
-
 
         // Declaração if
         public override object? VisitIfStatement(ExprCParser.IfStatementContext context)
@@ -363,6 +372,7 @@ namespace lingC
             }
         }
 
+   
         // Visitando instruções printf
         public override object? VisitPrintfStatement(ExprCParser.PrintfStatementContext context)
         {
@@ -375,22 +385,22 @@ namespace lingC
             }
 
             // Imprimir os argumentos
-            foreach (var arg in args)
+            for (int i = 0; i < args.Count; i++)
             {
-                if (arg is string str)
+                if (i == 0 && args[i] is string str)
                 {
                     Console.Write(str.Replace("\\n", "\n"));
                 }
                 else
                 {
-                    Console.WriteLine(arg);
+                    Console.Write(args[i]);
                 }
             }
 
+            Console.WriteLine(); // Adiciona uma nova linha após a impressão
+
             return null;
         }
-
-
 
         // Visitando instruções scanf
         public override object? VisitScanfStatement(ExprCParser.ScanfStatementContext context)

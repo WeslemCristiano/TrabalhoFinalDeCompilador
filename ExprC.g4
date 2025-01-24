@@ -37,7 +37,13 @@ parameter
 
 // Declaração de variável
 variableDeclaration
-    : type IDENTIFIER ('[' CONSTANT ']')? ('=' expression)? ';'
+    : type variableDeclarator (',' variableDeclarator)* ';'
+    ;
+
+// Declarador de variável
+variableDeclarator
+    : IDENTIFIER ('[' CONSTANT ']')* ('=' expression)?
+    | '*' IDENTIFIER ('[' CONSTANT ']')* ('=' expression)?
     ;
 
 // Declaração de struct
@@ -80,6 +86,8 @@ statement
     | printfStatement
     | chamadaStatement ';'
     | returnStatement
+    | pointerDeclaration
+    | ternaryStatement
     ;
 
 // Expressão de instrução
@@ -144,6 +152,17 @@ chamadaStatement
 returnStatement
     : 'return' (expression)? ';'
     ;
+
+//Declaração para poteiro
+pointerDeclaration
+    : type PONTERO IDENTIFIER ('[' CONSTANT ']')? '=' '&' IDENTIFIER ';'
+    ;
+
+// Declaração do ternario
+ternaryStatement
+    : type IDENTIFIER '=' expression '?' expression ':' expression ';'
+    ;
+
 
 // Tipos
 type
@@ -210,12 +229,17 @@ primaryExpression
     | CONSTANT
     | STRING_LITERAL
     | '(' expression ')'
-    |'sizeof' '(' type ')'
+    | 'sizeof' '(' type ')'
     ;
 
 // Tokens
+CONSTANT: INT | FLOAT | CHAR;
+INT: [0-9]+;
+FLOAT: [0-9]+ '.' [0-9]+;
+CHAR: '\'' . '\'';
+PONTERO: '*';
+ARRAY: '[' ']';
 IDENTIFIER : [a-zA-Z_][a-zA-Z0-9_]*;
-CONSTANT   : [0-9]+ ('.' [0-9]+)?;
 STRING_LITERAL : '"' (~["\\] | '\\' .)* '"';
 HEADER_FILE : [a-zA-Z_][a-zA-Z0-9_]* '.' [a-zA-Z_][a-zA-Z0-9_]*;
 WS : [ \t\r\n]+ -> skip;

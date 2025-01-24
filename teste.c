@@ -2,7 +2,7 @@
 
 int main()
 {
-    printf("Hello World!\n");
-    return 0;
+    int x = 10 + 20 + 30 + 40 + 50;
 
+    printf("Soma: ", x);
 }

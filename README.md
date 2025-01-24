@@ -101,7 +101,7 @@ um formato executável, de acordo com os seguintes comandos:
 
 3. Compile e execute o compilador:
    ```bash
-    dotnet run teste.c
+    dotnet run -- Testes\funçãoSoma.c
    ```
 
 ---
@@ -113,14 +113,18 @@ Aqui está um exemplo de programa válido para o compilador:
 ```c
 #include <stdio.h>
 
-int soma(int a, int b) {
-    return a + b;
+void soma(int a, int b) {
+    int soma = a + b;
+    printf("Soma: ", soma);
 }
 
 int main() {
-    int x = 10, y = 20;
-    int resultado = soma(x, y);
-    printf("Resultado: \n", resultado);
+    int a, b;
+    printf("Digite o primeiro numero: ");
+    scanf("%d", &a);
+    printf("Digite o segundo numero: ");
+    scanf("%d", &b);
+    soma(a, b);
     return 0;
 }
 ```

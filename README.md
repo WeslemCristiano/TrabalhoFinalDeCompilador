@@ -119,17 +119,7 @@ Siga os passos abaixo para instalar e configurar o ANTLR 4 no Windows:
 
 ## **Como Executar**
 
-1. Clone este repositório:
-   ```bash
-   https://github.com/WeslemCristiano/TrabalhoFinalDeCompilador
-   ```
-
-2. Gere os analisadores com o ANTLR-4:
-   ```bash
-    java -jar C:\Users\User\Documents\ANTLR-4\antlr-4.13.2-complete.jar -Dlanguage=CSharp -visitor -o Grammar ExprC.g4
-   ```
-
-3. Compile e execute o compilador:
+1. Compile e execute o compilador:
    ```bash
     tianex.bat funçãoSoma.c
    ```

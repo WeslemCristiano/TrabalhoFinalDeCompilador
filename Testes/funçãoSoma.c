@@ -1,9 +1,8 @@
-
 #include <stdio.h>
 
 void soma(int a, int b) {
     int soma = a + b;
-    printf("Soma: ", soma);
+    printf("Soma: ", soma); 
 }
 
 int main() {
@@ -13,5 +12,4 @@ int main() {
     printf("Digite o segundo numero: ");
     scanf("%d", &b);
     soma(a, b);
-    return 0;
 }

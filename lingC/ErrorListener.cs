@@ -1,5 +1,4 @@
 using Antlr4.Runtime;
-using Antlr4.Runtime.Misc;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,10 +15,7 @@ namespace lingC
                                          int line, int charPositionInLine, 
                                          string msg, RecognitionException e)
         {
-            HasErrors = true;
-            string errorMessage = $"Erro de sintaxe na linha {line}, posição {charPositionInLine}: {msg}";
-            ErrorMessages.Add(errorMessage);
-            output.WriteLine(errorMessage);
+            ReportSyntaxError(output, line, charPositionInLine, msg);
         }
 
         public void SyntaxError(TextWriter output, 
@@ -27,8 +23,13 @@ namespace lingC
                                 int line, int charPositionInLine, 
                                 string msg, RecognitionException e)
         {
+            ReportSyntaxError(output, line, charPositionInLine, msg);
+        }
+
+        private void ReportSyntaxError(TextWriter output, int line, int charPositionInLine, string msg)
+        {
             HasErrors = true;
-            string errorMessage = $"Erro de sintaxe na linha {line}, posição {charPositionInLine}: {msg}";
+            string errorMessage = $"Syntax error on line {line}, position {charPositionInLine}: {msg}";
             ErrorMessages.Add(errorMessage);
             output.WriteLine(errorMessage);
         }

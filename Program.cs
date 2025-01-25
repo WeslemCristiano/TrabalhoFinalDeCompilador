@@ -3,26 +3,13 @@ using System.IO;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using lingC;
+using CompiladorTianex.lingC; 
 
 class Program
 {
     static void Main(string[] args)
     {
-        if (args.Length == 0)
-        {
-            Console.WriteLine();
-            Console.WriteLine("Por favor, forneça o caminho para o arquivo .Tianex!!!\n");
-            return;
-        }
-
         string filePath = args[0];
-
-        if (!File.Exists(filePath))
-        {
-            Console.WriteLine($"Arquivo não encontrado: {filePath}");
-            return;
-        }
-
         string input = File.ReadAllText(filePath);
 
         AntlrInputStream inputStream = new AntlrInputStream(input);
@@ -42,7 +29,7 @@ class Program
         // Verifica se houve erros de sintaxe
         if (errorListener.HasErrors)
         {
-            Console.WriteLine("Erros de sintaxe encontrados:");
+            Console.WriteLine("Syntax errors found: ");
             foreach (var errorMessage in errorListener.ErrorMessages)
             {
                 Console.WriteLine(errorMessage);
@@ -50,21 +37,24 @@ class Program
             return;
         }
 
+        // Verificação semântica
+        SemanticExprListener semanticListener = new SemanticExprListener();
+        ParseTreeWalker walker = new ParseTreeWalker();
+        walker.Walk(semanticListener, tree);
+
+        // Verifica se houve erros semânticos
+        if (semanticListener.HasErrors)
+        {
+            Console.WriteLine("Semantic errors found: ");
+            foreach (var errorMessage in semanticListener.ErrorMessages)
+            {
+                Console.WriteLine(errorMessage);
+            }
+            return;
+        }
+
+        // Visitação da árvore de análise
         ExprCVisitorImpl visitor = new ExprCVisitorImpl();
         visitor.Visit(tree);
     }
 }
-// Para de debugar o código         
-//         string input = @"
-//     #include <stdio.h>
-
-//     int main() {
-//         int a = 5;
-//         int b = 10;
-//         int c = a + b;
-
-//         printf(""Hello, World! %d\n"", c);
-
-//         return 0;
-//     }
-// ";

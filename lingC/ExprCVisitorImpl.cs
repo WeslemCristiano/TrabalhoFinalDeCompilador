@@ -16,7 +16,7 @@ namespace lingC
         {
             string functionName = context.IDENTIFIER().GetText();
             functions[functionName] = context;
-            Console.WriteLine($"Função '{functionName}' declarada.");
+            // Console.WriteLine($"Função '{functionName}' declarada."); // Para depuração
             return null;
         }
 
@@ -27,7 +27,7 @@ namespace lingC
 
             if (!functions.ContainsKey(functionName))
             {
-                throw new Exception($"Erro: Função '{functionName}' não declarada.");
+                throw new Exception($"Error: Function '{functionName}' undeclared.");
             }
 
             ExprCParser.FunctionDeclarationContext functionContext = functions[functionName];
@@ -37,7 +37,7 @@ namespace lingC
             // Verificar se o número de argumentos corresponde ao número de parâmetros
             if (parameterList != null && parameterList.parameter().Length != arguments.Length)
             {
-                throw new Exception($"Erro: Número incorreto de argumentos para a função '{functionName}'.");
+                throw new Exception($"Error: Incorrect number of arguments for function'{functionName}'.");
             }
 
             // Salvar o estado atual da memória
@@ -72,7 +72,7 @@ namespace lingC
             }
             else
             {
-                throw new Exception("Erro: Função 'main' não declarada.");
+                throw new Exception("Error: Function 'main' not declared.");
             }
         }
 
@@ -88,12 +88,12 @@ namespace lingC
                     // Avalia a expressão do lado direito da atribuição
                     object? value = Visit(declarator.expression());
                     memory[varName] = value;
-                    Console.WriteLine($"Variável '{varName}' inicializada com valor: {value}"); // Para depuração
+                    //Console.WriteLine($"Variável '{varName}' inicializada com valor: {value}"); // Para depuração
                 }
                 else
                 {
                     memory[varName] = null;
-                    Console.WriteLine($"Variável '{varName}' declarada sem inicialização."); // Para depuração
+                    //Console.WriteLine($"Variável '{varName}' declarada sem inicialização."); // Para depuração
                 }
             }
 
@@ -209,7 +209,7 @@ namespace lingC
                 }
                 else
                 {
-                    throw new Exception($"Erro: Variável '{varName}' não declarada.");
+                    throw new Exception($"Error: Variable '{varName}' undeclared.");
                 }
             }
             else if (context.STRING_LITERAL() != null)
@@ -431,7 +431,7 @@ namespace lingC
                 }
                 else
                 {
-                    throw new Exception($"Erro: Variável '{varName}' não declarada.");
+                    throw new Exception($"Error: Variable'{varName}' undeclared.");
                 }
             }
             return null;
@@ -456,11 +456,11 @@ namespace lingC
             if (memory.TryGetValue(pointedVarName, out object? pointedValue))
             {
                 memory[varName] = pointedValue;
-                Console.WriteLine($"Ponteiro '{varName}' inicializado apontando para '{pointedVarName}' com valor: {pointedValue}");
+                //Console.WriteLine($"Ponteiro '{varName}' inicializado apontando para '{pointedVarName}' com valor: {pointedValue}"); // Para depuração
             }
             else
             {
-                throw new Exception($"Erro: Variável '{pointedVarName}' não declarada.");
+                throw new Exception($"Error: Variable '{pointedVarName}' undeclared.");
             }
 
             return null;
@@ -475,7 +475,7 @@ namespace lingC
             object? falseExpr = Visit(context.expression(2));
 
             memory[varName] = Convert.ToBoolean(condition) ? trueExpr : falseExpr;
-            Console.WriteLine($"Variável '{varName}' inicializada com valor: {memory[varName]}");
+            //Console.WriteLine($"Variável '{varName}' inicializada com valor: {memory[varName]}"); // Para depuração
 
             return null;
         }

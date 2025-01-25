@@ -87,6 +87,36 @@ um formato executável, de acordo com os seguintes comandos:
 
 ---
 
+### **Instalação do ANTLR 4**
+
+Siga os passos abaixo para instalar e configurar o ANTLR 4 no Windows:
+
+## 1. Download
+- Baixe o arquivo `antlr-4.x.x-complete.jar` do site oficial: [https://www.antlr.org/download.html](https://www.antlr.org/download.html).
+- Salve em uma pasta, como `C:\antlr`.
+
+## 2. Configuração
+### Variáveis de Ambiente
+1. **Adicionar o ANTLR ao `CLASSPATH`:**
+   - Vá em **Configurações Avançadas do Sistema** > **Variáveis de Ambiente**.
+   - Crie ou edite a variável `CLASSPATH` e adicione:
+     ```
+     .;C:\antlr\antlr-4.x.x-complete.jar;
+     ```
+
+2. **Adicionar o Java ao `Path` (se necessário):**
+   - Na variável `Path`, adicione o caminho para o executável do Java, por exemplo:
+     ```
+     C:\Program Files\Java\jdk-xx\bin
+     ```
+
+## 3. Testar Instalação
+- Abra o terminal e execute:
+  ```bash
+  java -jar C:\antlr\antlr-4.x.x-complete.jar
+
+---
+
 ## **Como Executar**
 
 1. Clone este repositório:
@@ -101,7 +131,7 @@ um formato executável, de acordo com os seguintes comandos:
 
 3. Compile e execute o compilador:
    ```bash
-    dotnet run -- Testes\funçãoSoma.c
+    tianex.bat funçãoSoma.c
    ```
 
 ---

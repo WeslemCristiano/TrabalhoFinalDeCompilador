@@ -44,6 +44,12 @@ public interface IExprCVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitPreprocessorDirective([NotNull] ExprCParser.PreprocessorDirectiveContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="ExprCParser.defineDirective"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitDefineDirective([NotNull] ExprCParser.DefineDirectiveContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="ExprCParser.mainFunction"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

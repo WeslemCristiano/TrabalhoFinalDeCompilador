@@ -8,6 +8,11 @@ preprocessorDirective
     : '#' 'include' '<' HEADER_FILE '>'
     ;
 
+// Definição constante de pré-processamento
+defineDirective
+    : '#' 'define' IDENTIFIER CONSTANT
+    ;    
+
 mainFunction
     : 'int' 'main' '(' ')' block
     ;
@@ -18,6 +23,7 @@ declaration
     | statement
     | structDeclaration
     | unionDeclaration
+    | defineDirective
     ;
 
 // Declarações de função

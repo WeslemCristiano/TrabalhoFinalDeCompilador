@@ -60,6 +60,18 @@ public partial class ExprCBaseListener : IExprCListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitPreprocessorDirective([NotNull] ExprCParser.PreprocessorDirectiveContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="ExprCParser.defineDirective"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterDefineDirective([NotNull] ExprCParser.DefineDirectiveContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ExprCParser.defineDirective"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitDefineDirective([NotNull] ExprCParser.DefineDirectiveContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="ExprCParser.mainFunction"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

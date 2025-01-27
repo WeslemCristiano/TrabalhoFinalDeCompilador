@@ -103,6 +103,19 @@ namespace lingC
             return null;
         }
 
+        // Definição constante de pré-processamento
+         /* defineDirective
+           : '#' 'define' IDENTIFIER CONSTANT
+          ; */
+
+        public override object? VisitDefineDirective(ExprCParser.DefineDirectiveContext context)
+        {
+            string varName = context.IDENTIFIER().GetText();
+            object? value = double.Parse(context.CONSTANT().GetText());
+            memory[varName] = value;
+            return null;
+        }
+
         // Visitando expressões aritméticas (adição e subtração)
         public override object? VisitAdditiveExpression(ExprCParser.AdditiveExpressionContext context)
         {

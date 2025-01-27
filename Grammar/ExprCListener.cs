@@ -51,6 +51,16 @@ public interface IExprCListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitPreprocessorDirective([NotNull] ExprCParser.PreprocessorDirectiveContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="ExprCParser.defineDirective"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterDefineDirective([NotNull] ExprCParser.DefineDirectiveContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ExprCParser.defineDirective"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitDefineDirective([NotNull] ExprCParser.DefineDirectiveContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="ExprCParser.mainFunction"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

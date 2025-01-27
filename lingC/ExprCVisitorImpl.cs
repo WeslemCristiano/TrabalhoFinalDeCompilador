@@ -8,6 +8,9 @@ namespace lingC
         // Dicionário para armazenar variáveis e seus valores
         private Dictionary<string, object?> memory = new Dictionary<string, object?>();
 
+        // Modo de depuração
+        private bool debugMode = false;
+
         // Dicionário para armazenar funções e seus contextos
         private Dictionary<string, ExprCParser.FunctionDeclarationContext> functions = new Dictionary<string, ExprCParser.FunctionDeclarationContext>();
 
@@ -100,7 +103,7 @@ namespace lingC
             return null;
         }
 
-       // Visitando expressões aritméticas (adição e subtração)
+        // Visitando expressões aritméticas (adição e subtração)
         public override object? VisitAdditiveExpression(ExprCParser.AdditiveExpressionContext context)
         {
             object? result = Visit(context.multiplicativeExpression(0));
@@ -189,9 +192,9 @@ namespace lingC
             return value;
         }
 
-        
 
-       // Visitando constantes (números inteiros e floats) dentro da expressão primária
+
+        // Visitando constantes (números inteiros e floats) dentro da expressão primária
         public override object? VisitPrimaryExpression(ExprCParser.PrimaryExpressionContext context)
         {
             if (context.CONSTANT() != null)
@@ -222,7 +225,7 @@ namespace lingC
                 // Caso seja uma expressão entre parênteses
                 return Visit(context.expression());
             }
-        } 
+        }
 
         // Declaração de expressão lógica (ou)
         public override object? VisitLogicalOrExpression(ExprCParser.LogicalOrExpressionContext context)
@@ -356,6 +359,39 @@ namespace lingC
             return null;
         }
 
+        // Declaração switch
+         public override object? VisitSwitchStatement(ExprCParser.SwitchStatementContext context)
+        {
+            object? switchValue = Visit(context.expression());
+            bool caseMatched = false;
+
+            foreach (var caseStatement in context.caseStatement())
+            {
+                object? caseValue = double.Parse(caseStatement.CONSTANT().GetText());
+                if (switchValue.Equals(caseValue))
+                {
+                    caseMatched = true;
+                    foreach (var statement in caseStatement.statement())
+                    {
+                        Visit(statement);
+                    }
+                    break;
+                }
+            }
+
+            if (!caseMatched && context.defaultStatement() != null)
+            {
+                foreach (var statement in context.defaultStatement().statement())
+                {
+                    Visit(statement);
+                }
+            }
+
+            return null;
+        }
+
+       
+      
         // Visitando expressões de atribuição
         public override object? VisitAssignmentExpression(ExprCParser.AssignmentExpressionContext context)
         {
@@ -372,7 +408,7 @@ namespace lingC
             }
         }
 
-   
+
         // Visitando instruções printf
         public override object? VisitPrintfStatement(ExprCParser.PrintfStatementContext context)
         {
@@ -445,40 +481,40 @@ namespace lingC
                 return Visit(context.expression());
             }
             return null;
+
         }
-      
         // Visitando declarações de ponteiros
         public override object? VisitPointerDeclaration(ExprCParser.PointerDeclarationContext context)
         {
             string varName = context.IDENTIFIER(0).GetText();
-            string pointedVarName = context.IDENTIFIER(1).GetText();
+            object? pointedValue;
 
-            if (memory.TryGetValue(pointedVarName, out object? pointedValue))
+            if (context.IDENTIFIER().Length > 1)
             {
-                memory[varName] = pointedValue;
-                //Console.WriteLine($"Ponteiro '{varName}' inicializado apontando para '{pointedVarName}' com valor: {pointedValue}"); // Para depuração
+                string pointedVarName = context.IDENTIFIER(1).GetText();
+
+                if (memory.TryGetValue(pointedVarName, out pointedValue))
+                {
+                    memory[varName] = pointedValue;
+                    if (debugMode) // Suporte a depuração
+                        Console.WriteLine($"Ponteiro '{varName}' inicializado apontando para '{pointedVarName}' com valor: {pointedValue}");
+                }
+                else
+                {
+                    throw new Exception($"Error: Variable '{pointedVarName}' undeclared.");
+                }
             }
             else
             {
-                throw new Exception($"Error: Variable '{pointedVarName}' undeclared.");
+                // Declaração sem inicialização
+                memory[varName] = null;
+                if (debugMode)
+                    Console.WriteLine($"Ponteiro '{varName}' declarado, mas não inicializado.");
             }
 
             return null;
         }
 
-         // Visitando declarações ternárias
-        public override object? VisitTernaryStatement(ExprCParser.TernaryStatementContext context)
-        {
-            string varName = context.IDENTIFIER().GetText();
-            object? condition = Visit(context.expression(0));
-            object? trueExpr = Visit(context.expression(1));
-            object? falseExpr = Visit(context.expression(2));
-
-            memory[varName] = Convert.ToBoolean(condition) ? trueExpr : falseExpr;
-            //Console.WriteLine($"Variável '{varName}' inicializada com valor: {memory[varName]}"); // Para depuração
-
-            return null;
-        }
 
     }
 }

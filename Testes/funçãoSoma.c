@@ -12,4 +12,6 @@ int main() {
     printf("Digite o segundo numero: ");
     scanf("%d", &b);
     soma(a, b);
+
+    return 10;
 }

@@ -121,12 +121,13 @@ switchStatement
     ;
 
 caseStatement
-    : 'case' CONSTANT ':' statement*
+    : 'case' CONSTANT ':' statement* 'break' ';'
     ;
 
 defaultStatement
     : 'default' ':' statement*
     ;
+    
 
 // Declaração for
 forStatement
@@ -155,12 +156,13 @@ returnStatement
 
 //Declaração para poteiro
 pointerDeclaration
-    : type PONTERO IDENTIFIER ('[' CONSTANT ']')? '=' '&' IDENTIFIER ';'
+    : type (PONTERO)+ IDENTIFIER ('[' CONSTANT ']')? ('=' '&' IDENTIFIER)? ';'
     ;
+
 
 // Declaração do ternario
 ternaryStatement
-    : type IDENTIFIER '=' expression '?' expression ':' expression ';'
+    : IDENTIFIER '=' expression '?' expression ':' expression ';'
     ;
 
 
@@ -225,11 +227,12 @@ unaryExpression
 
 // Expressões primárias
 primaryExpression
-    : IDENTIFIER
+    : '(' expression ')'
+    | IDENTIFIER
     | CONSTANT
     | STRING_LITERAL
-    | '(' expression ')'
     | 'sizeof' '(' type ')'
+   // | chamadaStatement
     ;
 
 // Tokens

@@ -51,7 +51,7 @@ class Program
                 Console.WriteLine(errorMessage);
             }
             return;
-        }
+        } 
 
         // Visitação da árvore de análise
         ExprCVisitorImpl visitor = new ExprCVisitorImpl();

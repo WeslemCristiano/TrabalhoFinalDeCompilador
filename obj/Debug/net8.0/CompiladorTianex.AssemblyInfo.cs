@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CompiladorTianex")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5f40ea4556d86f761aacd078c8d808b763d26660")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+14a2f9cd98220b851f5c7139744f76afebe0ac11")]
 [assembly: System.Reflection.AssemblyProductAttribute("CompiladorTianex")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CompiladorTianex")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

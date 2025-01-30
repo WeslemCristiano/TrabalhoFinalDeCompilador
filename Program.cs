@@ -37,7 +37,7 @@ class Program
             return;
         }
 
-        // Verificação semântica
+       // Verificação semântica
         SemanticExprListener semanticListener = new SemanticExprListener();
         ParseTreeWalker walker = new ParseTreeWalker();
         walker.Walk(semanticListener, tree);
@@ -51,7 +51,7 @@ class Program
                 Console.WriteLine(errorMessage);
             }
             return;
-        } 
+        }  
 
         // Visitação da árvore de análise
         ExprCVisitorImpl visitor = new ExprCVisitorImpl();

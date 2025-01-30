@@ -37,13 +37,10 @@ namespace lingC
             ExprCParser.ParameterListContext? parameterList = functionContext.parameterList();
             var arguments = context.expression();
 
-            // Verificar se o número de argumentos corresponde ao número de parâmetros
             if (parameterList != null && parameterList.parameter().Length != arguments.Length)
             {
                 throw new Exception($"Error: Incorrect number of arguments for function'{functionName}'.");
             }
-
-            // Salvar o estado atual da memória
             var previousMemory = new Dictionary<string, object?>(memory);
 
             // Atribuir valores dos argumentos aos parâmetros
@@ -56,13 +53,9 @@ namespace lingC
                     memory[paramName] = argValue;
                 }
             }
-
             // Executar o corpo da função
             object? result = Visit(functionContext.block());
-
-            // Restaurar o estado anterior da memória
             memory = previousMemory;
-
             return result;
         }
 
@@ -88,7 +81,6 @@ namespace lingC
 
                 if (declarator.expression() != null)
                 {
-                    // Avalia a expressão do lado direito da atribuição
                     object? value = Visit(declarator.expression());
                     memory[varName] = value;
                     //Console.WriteLine($"Variável '{varName}' inicializada com valor: {value}"); // Para depuração
@@ -103,11 +95,7 @@ namespace lingC
             return null;
         }
 
-        // Definição constante de pré-processamento
-         /* defineDirective
-           : '#' 'define' IDENTIFIER CONSTANT
-          ; */
-
+        // Visitando declarações de constantes
         public override object? VisitDefineDirective(ExprCParser.DefineDirectiveContext context)
         {
             string varName = context.IDENTIFIER().GetText();
@@ -165,54 +153,47 @@ namespace lingC
         // Declaração de expressão unária
         public override object? VisitUnaryExpression(ExprCParser.UnaryExpressionContext context)
         {
-            object? value = Visit(context.primaryExpression());
-
-            if (context.GetChild(0) != null)
+            if (context.primaryExpression() != null)
             {
-                string operatorText = context.GetChild(0).GetText();
-                if (operatorText == "-")
+                return Visit(context.primaryExpression());
+            }
+            else
+            {
+                string varName = context.GetChild(1).GetText();
+                if (memory.TryGetValue(varName, out object? value))
                 {
-                    return -Convert.ToDouble(value);
+                    if (context.GetChild(0).GetText() == "++")
+                    {
+                        memory[varName] = Convert.ToDouble(memory[varName]) + 1;
+                    }
+                    else if (context.GetChild(0).GetText() == "--")
+                    {
+                        memory[varName] = Convert.ToDouble(memory[varName]) - 1;
+                    }
+                    else if (context.GetChild(0).GetText() == "!")
+                    {
+                        memory[varName] = !Convert.ToBoolean(memory[varName]);
+                    }
+                    else if (context.GetChild(0).GetText() == "&")
+                    {
+                        return memory[varName];
+                    }
+
+                    return memory[varName];
                 }
-                else if (operatorText == "!")
+                else
                 {
-                    return !Convert.ToBoolean(value);
-                }
-                else if (operatorText == "++")
-                {
-                    if (value is double)
-                    {
-                        return (double)value + 1;
-                    }
-                    else if (value is int)
-                    {
-                        return (int)value + 1;
-                    }
-                }
-                else if (operatorText == "--")
-                {
-                    if (value is double)
-                    {
-                        return (double)value - 1;
-                    }
-                    else if (value is int)
-                    {
-                        return (int)value - 1;
-                    }
+                    throw new Exception($"Error: Variable '{varName}' undeclared.");
                 }
             }
-
-            return value;
         }
-
-
 
         // Visitando constantes (números inteiros e floats) dentro da expressão primária
         public override object? VisitPrimaryExpression(ExprCParser.PrimaryExpressionContext context)
         {
             if (context.CONSTANT() != null)
             {
-                // Parseia o token CONSTANT como número
+
                 return double.Parse(context.CONSTANT().GetText());
             }
             else if (context.IDENTIFIER() != null)
@@ -230,12 +211,10 @@ namespace lingC
             }
             else if (context.STRING_LITERAL() != null)
             {
-                // Retorna o literal de string sem as aspas
                 return context.STRING_LITERAL().GetText().Trim('"');
             }
             else
             {
-                // Caso seja uma expressão entre parênteses
                 return Visit(context.expression());
             }
         }
@@ -354,15 +333,15 @@ namespace lingC
         // Declaração do for
         public override object? VisitForStatement(ExprCParser.ForStatementContext context)
         {
-            // Inicialização
-            Visit(context.expression(0));
+            if (context.expression(0) != null)
+            {
+                Visit(context.expression(0));
+            }
 
-            // Condição e corpo do loop
             while (context.expression(1) == null || Convert.ToBoolean(Visit(context.expression(1))))
             {
                 Visit(context.statement());
 
-                // Atualização
                 if (context.expression(2) != null)
                 {
                     Visit(context.expression(2));
@@ -373,7 +352,7 @@ namespace lingC
         }
 
         // Declaração switch
-         public override object? VisitSwitchStatement(ExprCParser.SwitchStatementContext context)
+        public override object? VisitSwitchStatement(ExprCParser.SwitchStatementContext context)
         {
             object? switchValue = Visit(context.expression());
             bool caseMatched = false;
@@ -403,8 +382,7 @@ namespace lingC
             return null;
         }
 
-       
-      
+
         // Visitando expressões de atribuição
         public override object? VisitAssignmentExpression(ExprCParser.AssignmentExpressionContext context)
         {
@@ -426,14 +404,10 @@ namespace lingC
         public override object? VisitPrintfStatement(ExprCParser.PrintfStatementContext context)
         {
             List<object?> args = new List<object?>();
-
-            // Processar todos os argumentos passados para printf
             for (int i = 0; i < context.expression().Length; i++)
             {
                 args.Add(Visit(context.expression(i)));
             }
-
-            // Imprimir os argumentos
             for (int i = 0; i < args.Count; i++)
             {
                 if (i == 0 && args[i] is string str)
@@ -445,9 +419,7 @@ namespace lingC
                     Console.Write(args[i]);
                 }
             }
-
-            Console.WriteLine(); // Adiciona uma nova linha após a impressão
-
+            Console.WriteLine(); 
             return null;
         }
 
@@ -463,7 +435,6 @@ namespace lingC
                     string? input = Console.ReadLine();
                     if (input != null)
                     {
-                        // Verificar o tipo esperado (int ou float)
                         if (format.Contains("%d") && int.TryParse(input, out int intValue))
                         {
                             memory[varName] = intValue;
@@ -474,7 +445,7 @@ namespace lingC
                         }
                         else
                         {
-                            memory[varName] = input;  // Para outras entradas, armazenar como string
+                            memory[varName] = input;
                         }
                     }
                 }
@@ -491,43 +462,50 @@ namespace lingC
         {
             if (context.expression() != null)
             {
-                return Visit(context.expression());
+                object? returnValue = Visit(context.expression());
+                return returnValue;
             }
             return null;
-
         }
-        // Visitando declarações de ponteiros
+
+        // Declaração de ponteiro
+
         public override object? VisitPointerDeclaration(ExprCParser.PointerDeclarationContext context)
         {
+            
             string varName = context.IDENTIFIER(0).GetText();
-            object? pointedValue;
+            string pointerName = context.IDENTIFIER(1).GetText();
 
-            if (context.IDENTIFIER().Length > 1)
+            if (context.GetChild(3) != null)
             {
-                string pointedVarName = context.IDENTIFIER(1).GetText();
-
-                if (memory.TryGetValue(pointedVarName, out pointedValue))
-                {
-                    memory[varName] = pointedValue;
-                    if (debugMode) // Suporte a depuração
-                        Console.WriteLine($"Ponteiro '{varName}' inicializado apontando para '{pointedVarName}' com valor: {pointedValue}");
-                }
-                else
-                {
-                    throw new Exception($"Error: Variable '{pointedVarName}' undeclared.");
-                }
+                memory[varName] = memory[pointerName];
             }
             else
             {
-                // Declaração sem inicialização
                 memory[varName] = null;
-                if (debugMode)
-                    Console.WriteLine($"Ponteiro '{varName}' declarado, mas não inicializado.");
             }
-
             return null;
         }
 
+
+        // Expressões ternárias
+        public override object? VisitTernaryExpression(ExprCParser.TernaryExpressionContext context)
+        {
+            object? condition = Visit(context.logicalOrExpression());
+            if (condition == null)
+            {
+                throw new Exception("Error: Ternary condition cannot be null.");
+            }
+
+            if (Convert.ToBoolean(condition))
+            {
+                return Visit(context.statement(0));
+            }
+            else
+            {
+                return Visit(context.statement(1));
+            }
+        }
 
     }
 }

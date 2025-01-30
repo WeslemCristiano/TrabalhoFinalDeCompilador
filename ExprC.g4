@@ -24,6 +24,7 @@ declaration
     | structDeclaration
     | unionDeclaration
     | defineDirective
+    | returnStatement
     ;
 
 // Declarações de função
@@ -93,7 +94,7 @@ statement
     | chamadaStatement ';'
     | returnStatement
     | pointerDeclaration
-    | ternaryStatement
+    | ternaryExpression
     ;
 
 // Expressão de instrução
@@ -137,7 +138,7 @@ defaultStatement
 
 // Declaração for
 forStatement
-    : 'for' '(' expression? ';' expression? ';' expression? ')' statement
+    : 'for' '(' (variableDeclaration | expression)? ';' expression? ';' expression? ')' statement
     ;
 
 // Declaração while
@@ -160,15 +161,16 @@ returnStatement
     : 'return' (expression)? ';'
     ;
 
-//Declaração para poteiro
+// Declaração de ponteiro
 pointerDeclaration
-    : type (PONTERO)+ IDENTIFIER ('[' CONSTANT ']')? ('=' '&' IDENTIFIER)? ';'
+     // int *p = &x;
+    : type '*' IDENTIFIER ('=' '&' IDENTIFIER)? ';'
     ;
 
 
-// Declaração do ternario
-ternaryStatement
-    : IDENTIFIER '=' expression '?' expression ':' expression ';'
+// Expressões ternárias
+ternaryExpression
+    : logicalOrExpression '?' statement ':' statement
     ;
 
 
@@ -187,6 +189,7 @@ type
 // Expressões
 expression
     : assignmentExpression
+    | ternaryExpression
     ;
 
 // Expressões de atribuição
@@ -228,7 +231,7 @@ multiplicativeExpression
 // Expressões unárias
 unaryExpression
     : primaryExpression
-    | ('+' | '-' | '!' | '++' | '--') unaryExpression
+    | ('+' | '-' | '!' | '++' | '--' | '&' | '*') unaryExpression
     ;
 
 // Expressões primárias
@@ -246,8 +249,6 @@ CONSTANT: INT | FLOAT | CHAR;
 INT: [0-9]+;
 FLOAT: [0-9]+ '.' [0-9]+;
 CHAR: '\'' . '\'';
-PONTERO: '*';
-ARRAY: '[' ']';
 IDENTIFIER : [a-zA-Z_][a-zA-Z0-9_]*;
 STRING_LITERAL : '"' (~["\\] | '\\' .)* '"';
 HEADER_FILE : [a-zA-Z_][a-zA-Z0-9_]* '.' [a-zA-Z_][a-zA-Z0-9_]*;

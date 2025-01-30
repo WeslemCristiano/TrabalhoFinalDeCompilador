@@ -331,15 +331,15 @@ public interface IExprCListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitPointerDeclaration([NotNull] ExprCParser.PointerDeclarationContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="ExprCParser.ternaryStatement"/>.
+	/// Enter a parse tree produced by <see cref="ExprCParser.ternaryExpression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterTernaryStatement([NotNull] ExprCParser.TernaryStatementContext context);
+	void EnterTernaryExpression([NotNull] ExprCParser.TernaryExpressionContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="ExprCParser.ternaryStatement"/>.
+	/// Exit a parse tree produced by <see cref="ExprCParser.ternaryExpression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitTernaryStatement([NotNull] ExprCParser.TernaryStatementContext context);
+	void ExitTernaryExpression([NotNull] ExprCParser.TernaryExpressionContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="ExprCParser.type"/>.
 	/// </summary>

@@ -95,6 +95,7 @@ statement
     | returnStatement
     | pointerDeclaration
     | ternaryExpression
+    | arrayDeclaration
     ;
 
 // Expressão de instrução
@@ -173,6 +174,11 @@ ternaryExpression
     : logicalOrExpression '?' statement ':' statement
     ;
 
+// Declaração de array    
+arrayDeclaration
+    : type IDENTIFIER '[' CONSTANT ']' ('=' '{' (expression (',' expression)*)? '}')? ';'
+    ;    
+
 
 // Tipos
 type
@@ -184,6 +190,7 @@ type
     | 'short'
     | 'long'
     | 'unsigned'
+    | 'struct' IDENTIFIER
     ;
 
 // Expressões
@@ -237,11 +244,11 @@ unaryExpression
 // Expressões primárias
 primaryExpression
     : '(' expression ')'
-    | IDENTIFIER
+    | IDENTIFIER ('.' IDENTIFIER)* ('[' expression ']')*
     | CONSTANT
     | STRING_LITERAL
     | 'sizeof' '(' type ')'
-   // | chamadaStatement
+    //| chamadaStatement
     ;
 
 // Tokens

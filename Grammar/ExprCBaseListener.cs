@@ -408,6 +408,18 @@ public partial class ExprCBaseListener : IExprCListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitTernaryExpression([NotNull] ExprCParser.TernaryExpressionContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="ExprCParser.arrayDeclaration"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterArrayDeclaration([NotNull] ExprCParser.ArrayDeclarationContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ExprCParser.arrayDeclaration"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitArrayDeclaration([NotNull] ExprCParser.ArrayDeclarationContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="ExprCParser.type"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

@@ -5,21 +5,22 @@ namespace lingC
 {
     public class ExprCVisitorImpl : ExprCBaseVisitor<object?>
     {
-        // Dicionário para armazenar variáveis e seus valores
-        private Dictionary<string, object?> memory = new Dictionary<string, object?>();
-
-        // Modo de depuração
+        private Stack<Dictionary<string, object?>> memoryStack = new Stack<Dictionary<string, object?>>();
         private bool debugMode = false;
-
-        // Dicionário para armazenar funções e seus contextos
         private Dictionary<string, ExprCParser.FunctionDeclarationContext> functions = new Dictionary<string, ExprCParser.FunctionDeclarationContext>();
 
+        public ExprCVisitorImpl()
+        {
+            // Inicializa a pilha com um escopo global
+            memoryStack.Push(new Dictionary<string, object?>());
+        }
+
+        
         // Visitando declarações de funções
         public override object? VisitFunctionDeclaration(ExprCParser.FunctionDeclarationContext context)
         {
             string functionName = context.IDENTIFIER().GetText();
             functions[functionName] = context;
-            // Console.WriteLine($"Função '{functionName}' declarada."); // Para depuração
             return null;
         }
 
@@ -39,9 +40,11 @@ namespace lingC
 
             if (parameterList != null && parameterList.parameter().Length != arguments.Length)
             {
-                throw new Exception($"Error: Incorrect number of arguments for function'{functionName}'.");
+                throw new Exception($"Error: Incorrect number of arguments for function '{functionName}'.");
             }
-            var previousMemory = new Dictionary<string, object?>(memory);
+
+            // Cria um novo escopo para a função
+            memoryStack.Push(new Dictionary<string, object?>());
 
             // Atribuir valores dos argumentos aos parâmetros
             if (parameterList != null)
@@ -50,12 +53,16 @@ namespace lingC
                 {
                     string paramName = parameterList.parameter(i).IDENTIFIER().GetText();
                     object? argValue = Visit(arguments[i]);
-                    memory[paramName] = argValue;
+                    memoryStack.Peek()[paramName] = argValue;
                 }
             }
+
             // Executar o corpo da função
             object? result = Visit(functionContext.block());
-            memory = previousMemory;
+
+            // Remove o escopo da função
+            memoryStack.Pop();
+
             return result;
         }
 
@@ -82,13 +89,11 @@ namespace lingC
                 if (declarator.expression() != null)
                 {
                     object? value = Visit(declarator.expression());
-                    memory[varName] = value;
-                    //Console.WriteLine($"Variável '{varName}' inicializada com valor: {value}"); // Para depuração
+                    memoryStack.Peek()[varName] = value;
                 }
                 else
                 {
-                    memory[varName] = null;
-                    //Console.WriteLine($"Variável '{varName}' declarada sem inicialização."); // Para depuração
+                    memoryStack.Peek()[varName] = null;
                 }
             }
 
@@ -100,7 +105,37 @@ namespace lingC
         {
             string varName = context.IDENTIFIER().GetText();
             object? value = double.Parse(context.CONSTANT().GetText());
-            memory[varName] = value;
+            memoryStack.Peek()[varName] = value;
+            return null;
+        }
+
+        // Visitando declarações de structs
+        public override object? VisitStructDeclaration(ExprCParser.StructDeclarationContext context)
+        {
+            string structName = context.IDENTIFIER().GetText();
+
+            if (memoryStack.Peek().ContainsKey(structName))
+            {
+                throw new Exception($"Erro: A struct '{structName}' já foi declarada.");
+            }
+
+            var structMembers = new Dictionary<string, (string Type, int? ArraySize)>();
+
+            foreach (var memberContext in context.structMember())
+            {
+                string memberType = memberContext.type().GetText();
+                string memberName = memberContext.IDENTIFIER().GetText();
+
+                int? arraySize = null;
+                if (memberContext.CONSTANT() != null)
+                {
+                    arraySize = int.Parse(memberContext.CONSTANT().GetText());
+                }
+
+                structMembers[memberName] = (memberType, arraySize);
+            }
+            memoryStack.Peek()[structName] = structMembers;
+
             return null;
         }
 
@@ -160,26 +195,26 @@ namespace lingC
             else
             {
                 string varName = context.GetChild(1).GetText();
-                if (memory.TryGetValue(varName, out object? value))
+                if (memoryStack.Peek().TryGetValue(varName, out object? value))
                 {
                     if (context.GetChild(0).GetText() == "++")
                     {
-                        memory[varName] = Convert.ToDouble(memory[varName]) + 1;
+                        memoryStack.Peek()[varName] = Convert.ToDouble(memoryStack.Peek()[varName]) + 1;
                     }
                     else if (context.GetChild(0).GetText() == "--")
                     {
-                        memory[varName] = Convert.ToDouble(memory[varName]) - 1;
+                        memoryStack.Peek()[varName] = Convert.ToDouble(memoryStack.Peek()[varName]) - 1;
                     }
                     else if (context.GetChild(0).GetText() == "!")
                     {
-                        memory[varName] = !Convert.ToBoolean(memory[varName]);
+                        memoryStack.Peek()[varName] = !Convert.ToBoolean(memoryStack.Peek()[varName]);
                     }
                     else if (context.GetChild(0).GetText() == "&")
                     {
-                        return memory[varName];
+                        return memoryStack.Peek()[varName];
                     }
 
-                    return memory[varName];
+                    return memoryStack.Peek()[varName];
                 }
                 else
                 {
@@ -193,21 +228,52 @@ namespace lingC
         {
             if (context.CONSTANT() != null)
             {
-
-                return double.Parse(context.CONSTANT().GetText());
-            }
-            else if (context.IDENTIFIER() != null)
-            {
-                string varName = context.IDENTIFIER().GetText();
-
-                if (memory.ContainsKey(varName))
+                string constantText = context.CONSTANT().GetText();
+                if (double.TryParse(constantText, out double numericValue))
                 {
-                    return memory[varName];
+                    return numericValue;
+                }
+                else if (bool.TryParse(constantText, out bool boolValue))
+                {
+                    return boolValue;
                 }
                 else
                 {
-                    throw new Exception($"Error: Variable '{varName}' undeclared.");
+                    throw new Exception($"Error: Unable to parse constant '{constantText}'.");
                 }
+            }
+            else if (context.IDENTIFIER().Length > 0)
+            {
+                string varName = context.IDENTIFIER(0).GetText();
+
+                foreach (var scope in memoryStack)
+                {
+                    if (scope.ContainsKey(varName))
+                    {
+                        object? value = scope[varName];
+
+                        // Verifica se há indexação de array
+                        if (context.expression().Length > 0)
+                        {
+                            foreach (var expr in context.expression())
+                            {
+                                int index = Convert.ToInt32(Visit(expr));
+                                if (value is object?[] array)
+                                {
+                                    value = array[index];
+                                }
+                                else
+                                {
+                                    throw new Exception($"Error: Variable '{varName}' is not an array.");
+                                }
+                            }
+                        }
+
+                        return value;
+                    }
+                }
+
+                throw new Exception($"Error: Variable '{varName}' undeclared.");
             }
             else if (context.STRING_LITERAL() != null)
             {
@@ -215,7 +281,7 @@ namespace lingC
             }
             else
             {
-                return Visit(context.expression());
+                return Visit(context.expression(0));
             }
         }
 
@@ -351,6 +417,37 @@ namespace lingC
             return null;
         }
 
+        // Visitando declarações de arrays
+        public override object? VisitArrayDeclaration(ExprCParser.ArrayDeclarationContext context)
+        {
+            // Obtém o tipo do array
+            string type = context.type().GetText();
+
+            // Obtém o nome do array
+            string arrayName = context.IDENTIFIER().GetText();
+
+            // Obtém o tamanho do array
+            int arraySize = int.Parse(context.CONSTANT().GetText());
+
+            // Cria o array
+            var array = new object?[arraySize];
+
+            // Inicializa o array com os valores fornecidos
+            if (context.expression() != null)
+            {
+                var expressions = context.expression();
+                for (int i = 0; i < expressions.Length; i++)
+                {
+                    array[i] = Visit(expressions[i]);
+                }
+            }
+
+            // Armazena o array no escopo atual
+            memoryStack.Peek()[arrayName] = array;
+
+            return null;
+        }
+
         // Declaração switch
         public override object? VisitSwitchStatement(ExprCParser.SwitchStatementContext context)
         {
@@ -382,7 +479,6 @@ namespace lingC
             return null;
         }
 
-
         // Visitando expressões de atribuição
         public override object? VisitAssignmentExpression(ExprCParser.AssignmentExpressionContext context)
         {
@@ -390,7 +486,7 @@ namespace lingC
             {
                 string varName = context.IDENTIFIER().GetText();
                 object? value = Visit(context.logicalOrExpression());
-                memory[varName] = value;
+                memoryStack.Peek()[varName] = value;
                 return value;
             }
             else
@@ -398,7 +494,6 @@ namespace lingC
                 return Visit(context.logicalOrExpression());
             }
         }
-
 
         // Visitando instruções printf
         public override object? VisitPrintfStatement(ExprCParser.PrintfStatementContext context)
@@ -419,7 +514,7 @@ namespace lingC
                     Console.Write(args[i]);
                 }
             }
-            Console.WriteLine(); 
+            Console.WriteLine();
             return null;
         }
 
@@ -430,28 +525,28 @@ namespace lingC
             for (int i = 0; i < context.IDENTIFIER().Length; i++)
             {
                 string varName = context.IDENTIFIER(i).GetText();
-                if (memory.ContainsKey(varName))
+                foreach (var scope in memoryStack)
                 {
-                    string? input = Console.ReadLine();
-                    if (input != null)
+                    if (scope.ContainsKey(varName))
                     {
-                        if (format.Contains("%d") && int.TryParse(input, out int intValue))
+                        string? input = Console.ReadLine();
+                        if (input != null)
                         {
-                            memory[varName] = intValue;
+                            if (format.Contains("%d") && int.TryParse(input, out int intValue))
+                            {
+                                scope[varName] = intValue;
+                            }
+                            else if (format.Contains("%f") && float.TryParse(input, out float floatValue))
+                            {
+                                scope[varName] = floatValue;
+                            }
+                            else
+                            {
+                                scope[varName] = input;
+                            }
                         }
-                        else if (format.Contains("%f") && float.TryParse(input, out float floatValue))
-                        {
-                            memory[varName] = floatValue;
-                        }
-                        else
-                        {
-                            memory[varName] = input;
-                        }
+                        break;
                     }
-                }
-                else
-                {
-                    throw new Exception($"Error: Variable'{varName}' undeclared.");
                 }
             }
             return null;
@@ -469,24 +564,21 @@ namespace lingC
         }
 
         // Declaração de ponteiro
-
         public override object? VisitPointerDeclaration(ExprCParser.PointerDeclarationContext context)
         {
-            
             string varName = context.IDENTIFIER(0).GetText();
             string pointerName = context.IDENTIFIER(1).GetText();
 
             if (context.GetChild(3) != null)
             {
-                memory[varName] = memory[pointerName];
+                memoryStack.Peek()[varName] = memoryStack.Peek()[pointerName];
             }
             else
             {
-                memory[varName] = null;
+                memoryStack.Peek()[varName] = null;
             }
             return null;
         }
-
 
         // Expressões ternárias
         public override object? VisitTernaryExpression(ExprCParser.TernaryExpressionContext context)
@@ -506,6 +598,5 @@ namespace lingC
                 return Visit(context.statement(1));
             }
         }
-
     }
 }

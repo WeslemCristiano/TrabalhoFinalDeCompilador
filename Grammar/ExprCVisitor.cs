@@ -218,6 +218,12 @@ public interface IExprCVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitTernaryExpression([NotNull] ExprCParser.TernaryExpressionContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="ExprCParser.arrayDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitArrayDeclaration([NotNull] ExprCParser.ArrayDeclarationContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="ExprCParser.type"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

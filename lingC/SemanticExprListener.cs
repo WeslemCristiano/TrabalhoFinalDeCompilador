@@ -21,8 +21,6 @@ namespace CompiladorTianex.lingC
                 ErrorMessages.Add("Main function context is null.");
                 return;
             }
-
-         
         }
 
         // Declaração de variável
@@ -36,15 +34,18 @@ namespace CompiladorTianex.lingC
             }
 
             // Verifica se a variável já foi declarada
-            var variableName = context.GetChild<ITerminalNode>(0).GetText();
-            if (Variables.Contains(variableName))
+            foreach (var declarator in context.variableDeclarator())
             {
-                HasErrors = true;
-                ErrorMessages.Add($"Variable {variableName} has already been declared.");
-            }
-            else
-            {
-                Variables.Add(variableName);
+                var variableName = declarator.IDENTIFIER().GetText();
+                if (Variables.Contains(variableName))
+                {
+                    HasErrors = true;
+                    ErrorMessages.Add($"Variable {variableName} has already been declared.");
+                }
+                else
+                {
+                    Variables.Add(variableName);
+                }
             }
         }
 
@@ -216,6 +217,44 @@ namespace CompiladorTianex.lingC
             {
                 HasErrors = true;
                 ErrorMessages.Add("Scanf statement does not have a variable.");
+            }
+        }
+
+        // Declaração de ponteiro
+        public override void ExitPointerDeclaration([NotNull] ExprCParser.PointerDeclarationContext context)
+        {
+            if (context == null)
+            {
+                HasErrors = true;
+                ErrorMessages.Add("Pointer declaration context is null.");
+                return;
+            }
+
+            // Verifica se a variável do ponteiro foi declarada
+            var pointerName = context.IDENTIFIER(1).GetText();
+            if (!Variables.Contains(pointerName))
+            {
+                HasErrors = true;
+                ErrorMessages.Add($"Pointer variable {pointerName} has not been declared.");
+            }
+        }
+
+        // Expressões ternárias
+        public override void ExitTernaryExpression([NotNull] ExprCParser.TernaryExpressionContext context)
+        {
+            if (context == null)
+            {
+                HasErrors = true;
+                ErrorMessages.Add("Ternary expression context is null.");
+                return;
+            }
+
+            // Verifica se a expressão condicional é válida
+            var condition = context.logicalOrExpression();
+            if (condition == null)
+            {
+                HasErrors = true;
+                ErrorMessages.Add("Ternary expression does not have a condition.");
             }
         }
     }

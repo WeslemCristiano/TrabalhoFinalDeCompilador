@@ -341,6 +341,16 @@ public interface IExprCListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitTernaryExpression([NotNull] ExprCParser.TernaryExpressionContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="ExprCParser.arrayDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterArrayDeclaration([NotNull] ExprCParser.ArrayDeclarationContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ExprCParser.arrayDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitArrayDeclaration([NotNull] ExprCParser.ArrayDeclarationContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="ExprCParser.type"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

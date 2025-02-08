@@ -2,7 +2,7 @@
 
 int main() {
   
-  int mes = 8;
+  int mes = 1;
 
    switch (mes) {
       case 1:

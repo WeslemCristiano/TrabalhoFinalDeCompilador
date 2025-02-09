@@ -15,7 +15,7 @@ namespace lingC
             memoryStack.Push(new Dictionary<string, object?>());
         }
 
-        
+
         // Visitando declarações de funções
         public override object? VisitFunctionDeclaration(ExprCParser.FunctionDeclarationContext context)
         {
@@ -106,6 +106,60 @@ namespace lingC
             string varName = context.IDENTIFIER().GetText();
             object? value = double.Parse(context.CONSTANT().GetText());
             memoryStack.Peek()[varName] = value;
+            return null;
+        }
+
+        // Visitando declarações de arrays
+        public override object? VisitArrayDeclaration(ExprCParser.ArrayDeclarationContext context)
+        {
+            string type = context.type().GetText();
+
+            string arrayName = context.IDENTIFIER().GetText();
+            int arraySize = int.Parse(context.CONSTANT().GetText());
+
+            var array = new object?[arraySize];
+
+            if (context.expression() != null && context.expression().Length > 0)
+            {
+                var expressions = context.expression();
+                for (int i = 0; i < expressions.Length; i++)
+                {
+                    array[i] = Visit(expressions[i]);
+                }
+            }
+
+            memoryStack.Peek()[arrayName] = array;
+
+            return null;
+        }
+
+        // Visitando declarações de matrizes
+        public override object? VisitMatrixDeclaration(ExprCParser.MatrixDeclarationContext context)
+        {
+            string type = context.type().GetText();
+            string matrixName = context.IDENTIFIER().GetText();
+
+            int rows = int.Parse(context.CONSTANT(0).GetText());
+            int cols = int.Parse(context.CONSTANT(1).GetText());
+
+            var matrix = new object?[rows, cols];
+
+            if (context.arrayInitializer() != null)
+            {
+                var initializers = context.arrayInitializer();
+                for (int i = 0; i < initializers.Length; i++)
+                {
+                    var expressions = initializers[i].expression();
+                    for (int j = 0; j < expressions.Length; j++)
+                    {
+                        int row = i;
+                        int col = j;
+                        matrix[row, col] = Visit(expressions[j]);
+                    }
+                }
+            }
+            memoryStack.Peek()[matrixName] = matrix;
+
             return null;
         }
 
@@ -252,20 +306,23 @@ namespace lingC
                     {
                         object? value = scope[varName];
 
-                        // Verifica se há indexação de array
+                        // Verifica se há indexação de array ou matriz
                         if (context.expression().Length > 0)
                         {
-                            foreach (var expr in context.expression())
+                            if (value is object?[] array)
                             {
-                                int index = Convert.ToInt32(Visit(expr));
-                                if (value is object?[] array)
-                                {
-                                    value = array[index];
-                                }
-                                else
-                                {
-                                    throw new Exception($"Error: Variable '{varName}' is not an array.");
-                                }
+                                int index = Convert.ToInt32(Visit(context.expression(0)));
+                                value = array[index];
+                            }
+                            else if (value is object?[,] matrix)
+                            {
+                                int row = Convert.ToInt32(Visit(context.expression(0)));
+                                int col = Convert.ToInt32(Visit(context.expression(1)));
+                                value = matrix[row, col];
+                            }
+                            else
+                            {
+                                throw new Exception($"Error: Variable '{varName}' is not an array or matrix.");
                             }
                         }
 
@@ -413,37 +470,6 @@ namespace lingC
                     Visit(context.expression(2));
                 }
             }
-
-            return null;
-        }
-
-        // Visitando declarações de arrays
-        public override object? VisitArrayDeclaration(ExprCParser.ArrayDeclarationContext context)
-        {
-            // Obtém o tipo do array
-            string type = context.type().GetText();
-
-            // Obtém o nome do array
-            string arrayName = context.IDENTIFIER().GetText();
-
-            // Obtém o tamanho do array
-            int arraySize = int.Parse(context.CONSTANT().GetText());
-
-            // Cria o array
-            var array = new object?[arraySize];
-
-            // Inicializa o array com os valores fornecidos
-            if (context.expression() != null)
-            {
-                var expressions = context.expression();
-                for (int i = 0; i < expressions.Length; i++)
-                {
-                    array[i] = Visit(expressions[i]);
-                }
-            }
-
-            // Armazena o array no escopo atual
-            memoryStack.Peek()[arrayName] = array;
 
             return null;
         }

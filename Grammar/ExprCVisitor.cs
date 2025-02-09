@@ -224,6 +224,18 @@ public interface IExprCVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitArrayDeclaration([NotNull] ExprCParser.ArrayDeclarationContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="ExprCParser.matrixDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMatrixDeclaration([NotNull] ExprCParser.MatrixDeclarationContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="ExprCParser.arrayInitializer"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitArrayInitializer([NotNull] ExprCParser.ArrayInitializerContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="ExprCParser.type"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

@@ -420,6 +420,30 @@ public partial class ExprCBaseListener : IExprCListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitArrayDeclaration([NotNull] ExprCParser.ArrayDeclarationContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="ExprCParser.matrixDeclaration"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterMatrixDeclaration([NotNull] ExprCParser.MatrixDeclarationContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ExprCParser.matrixDeclaration"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitMatrixDeclaration([NotNull] ExprCParser.MatrixDeclarationContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ExprCParser.arrayInitializer"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterArrayInitializer([NotNull] ExprCParser.ArrayInitializerContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ExprCParser.arrayInitializer"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitArrayInitializer([NotNull] ExprCParser.ArrayInitializerContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="ExprCParser.type"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

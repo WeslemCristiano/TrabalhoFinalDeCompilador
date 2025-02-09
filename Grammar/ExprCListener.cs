@@ -351,6 +351,26 @@ public interface IExprCListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitArrayDeclaration([NotNull] ExprCParser.ArrayDeclarationContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="ExprCParser.matrixDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterMatrixDeclaration([NotNull] ExprCParser.MatrixDeclarationContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ExprCParser.matrixDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitMatrixDeclaration([NotNull] ExprCParser.MatrixDeclarationContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ExprCParser.arrayInitializer"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterArrayInitializer([NotNull] ExprCParser.ArrayInitializerContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ExprCParser.arrayInitializer"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitArrayInitializer([NotNull] ExprCParser.ArrayInitializerContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="ExprCParser.type"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

@@ -96,6 +96,7 @@ statement
     | pointerDeclaration
     | ternaryExpression
     | arrayDeclaration
+    | matrixDeclaration
     ;
 
 // Expressão de instrução
@@ -177,7 +178,16 @@ ternaryExpression
 // Declaração de array    
 arrayDeclaration
     : type IDENTIFIER '[' CONSTANT ']' ('=' '{' (expression (',' expression)*)? '}')? ';'
-    ;    
+    ; 
+
+// Declaração de matriz
+matrixDeclaration
+    : type IDENTIFIER '[' CONSTANT ']' '[' CONSTANT ']' ('=' '{' (arrayInitializer (',' arrayInitializer)*)? '}')? ';'
+    ;
+
+arrayInitializer
+    : '{' expression (',' expression)* '}'
+    ;
 
 
 // Tipos
@@ -244,7 +254,7 @@ unaryExpression
 // Expressões primárias
 primaryExpression
     : '(' expression ')'
-    | IDENTIFIER ('.' IDENTIFIER)* ('[' expression ']')*
+    | IDENTIFIER ('.' IDENTIFIER)* ('[' expression ']')* 
     | CONSTANT
     | STRING_LITERAL
     | 'sizeof' '(' type ')'

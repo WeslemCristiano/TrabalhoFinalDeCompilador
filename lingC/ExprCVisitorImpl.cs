@@ -163,6 +163,7 @@ namespace lingC
             return null;
         }
 
+
         // Visitando declarações de structs
         public override object? VisitStructDeclaration(ExprCParser.StructDeclarationContext context)
         {
@@ -188,10 +189,13 @@ namespace lingC
 
                 structMembers[memberName] = (memberType, arraySize);
             }
+
+            // Armazena a definição da struct no escopo global
             memoryStack.Peek()[structName] = structMembers;
 
             return null;
         }
+
 
         // Visitando expressões aritméticas (adição e subtração)
         public override object? VisitAdditiveExpression(ExprCParser.AdditiveExpressionContext context)
@@ -278,7 +282,7 @@ namespace lingC
         }
 
         // Visitando constantes (números inteiros e floats) dentro da expressão primária
-        public override object? VisitPrimaryExpression(ExprCParser.PrimaryExpressionContext context)
+         public override object? VisitPrimaryExpression(ExprCParser.PrimaryExpressionContext context)
         {
             if (context.CONSTANT() != null)
             {
@@ -296,15 +300,39 @@ namespace lingC
                     throw new Exception($"Error: Unable to parse constant '{constantText}'.");
                 }
             }
-            else if (context.IDENTIFIER().Length > 0)
+            else if (context.IDENTIFIER() != null)
             {
-                string varName = context.IDENTIFIER(0).GetText();
+                string varName = context.IDENTIFIER().GetText();
 
                 foreach (var scope in memoryStack)
                 {
                     if (scope.ContainsKey(varName))
                     {
                         object? value = scope[varName];
+
+                        // Verifica se há acesso a membro de struct
+                        if (context.expressionStruct() != null)
+                        {
+                            foreach (var memberContext in context.expressionStruct().IDENTIFIER())
+                            {
+                                string memberName = memberContext.GetText();
+                                if (value is Dictionary<string, object?> structMembers)
+                                {
+                                    if (structMembers.TryGetValue(memberName, out var memberValue))
+                                    {
+                                        value = memberValue;
+                                    }
+                                    else
+                                    {
+                                        throw new Exception($"Error: Member '{memberName}' not found in struct '{varName}'.");
+                                    }
+                                }
+                                else
+                                {
+                                    throw new Exception($"Error: Variable '{varName}' is not a struct.");
+                                }
+                            }
+                        } 
 
                         // Verifica se há indexação de array ou matriz
                         if (context.expression().Length > 0)
@@ -341,7 +369,7 @@ namespace lingC
                 return Visit(context.expression(0));
             }
         }
-
+        
         // Declaração de expressão lógica (ou)
         public override object? VisitLogicalOrExpression(ExprCParser.LogicalOrExpressionContext context)
         {
@@ -578,12 +606,39 @@ namespace lingC
             return null;
         }
 
+        // Visitando instruções gets
+        public override object? VisitGetsStatement(ExprCParser.GetsStatementContext context)
+        {
+            string varName = context.IDENTIFIER().GetText();
+            Console.Write($"{varName} = ");
+            string? input = Console.ReadLine();
+            memoryStack.Peek()[varName] = input;
+            return null;
+        }
+
+        // Visitando instruções de puts
+        public override object? VisitPutsStatement(ExprCParser.PutsStatementContext context)
+        {
+            if (context.expression() != null)
+            {
+                object? value = Visit(context.expression());
+                Console.WriteLine(value);
+            }
+            else if (context.STRING_LITERAL() != null)
+            {
+                string literal = context.STRING_LITERAL().GetText();
+                Console.WriteLine(literal.Trim('"'));
+            }
+            return null;
+        }
+
         // Visitando declarações return
         public override object? VisitReturnStatement(ExprCParser.ReturnStatementContext context)
         {
             if (context.expression() != null)
             {
                 object? returnValue = Visit(context.expression());
+                Console.WriteLine(returnValue);
                 return returnValue;
             }
             return null;

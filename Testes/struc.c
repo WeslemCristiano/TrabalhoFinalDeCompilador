@@ -1,23 +1,16 @@
-// teste de struct
-
-#include <stdio.h>
-
-struct pessoa {
+// testes de struct
+struct Pessoa
+{
+    int idade[1];
     char nome[50];
-    float altura;
 };
 
-int main() {
-    
-    struct pessoa p1;
-    
-    printf("Digite o nome da pessoa: ");
-    scanf("%s", p1.nome);
+int main()
+{
 
-    printf("Digite a altura da pessoa: ");
-    scanf("%f", &p1.altura);
+    struct Pessoa 
 
-    printf("Nome: %s\n", p1.nome);
-    printf("Altura: %.2f\n", p1.altura);
+    Pessoa.idade[0] = 10;
 
+    printf();
 }

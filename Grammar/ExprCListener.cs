@@ -201,6 +201,26 @@ public interface IExprCListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitExpressionStatement([NotNull] ExprCParser.ExpressionStatementContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="ExprCParser.getsStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterGetsStatement([NotNull] ExprCParser.GetsStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ExprCParser.getsStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitGetsStatement([NotNull] ExprCParser.GetsStatementContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ExprCParser.putsStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterPutsStatement([NotNull] ExprCParser.PutsStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ExprCParser.putsStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitPutsStatement([NotNull] ExprCParser.PutsStatementContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="ExprCParser.printfStatement"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -480,4 +500,14 @@ public interface IExprCListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitPrimaryExpression([NotNull] ExprCParser.PrimaryExpressionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ExprCParser.expressionStruct"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterExpressionStruct([NotNull] ExprCParser.ExpressionStructContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ExprCParser.expressionStruct"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitExpressionStruct([NotNull] ExprCParser.ExpressionStructContext context);
 }

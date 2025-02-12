@@ -5,7 +5,7 @@ program : preprocessorDirective* (declaration | functionDeclaration)* mainFuncti
 
 // Diretivas de pré-processamento
 preprocessorDirective
-    : '#' 'include' '<' HEADER_FILE '>'
+    : '#' 'include' '<' 'stdio.h' '>'
     ;
 
 // Definição constante de pré-processamento
@@ -24,7 +24,6 @@ declaration
     | structDeclaration
     | unionDeclaration
     | defineDirective
-    | returnStatement
     ;
 
 // Declarações de função
@@ -52,7 +51,6 @@ variableDeclarator
     : IDENTIFIER ('[' CONSTANT ']')* ('=' expression)?
     | '*' IDENTIFIER ('[' CONSTANT ']')* ('=' expression)?
     ;
-
 // Declaração de struct
 structDeclaration
     : 'struct' IDENTIFIER '{' structMember* '}' ';'
@@ -92,17 +90,28 @@ statement
     | scanfStatement
     | printfStatement
     | chamadaStatement ';'
-    | returnStatement
     | pointerDeclaration
     | ternaryExpression
     | arrayDeclaration
     | matrixDeclaration
+    | getsStatement
+    | putsStatement
     ;
 
 // Expressão de instrução
 expressionStatement
-    : expression ';'
+    : expression ';' | expression '.' IDENTIFIER '=' expression ';'
     ;
+
+//Instruções de gets
+getsStatement
+    : 'gets' '(' IDENTIFIER ')' ';'
+    ;
+
+ //Instruções de puts
+putsStatement
+    : 'puts' '(' (expression | STRING_LITERAL) ')' ';'
+    ;   
 
 // Instruções de printf
 printfStatement
@@ -160,7 +169,7 @@ chamadaStatement
 
 // Declaração return
 returnStatement
-    : 'return' (expression)? ';'
+    : 'return' expression? ';'
     ;
 
 // Declaração de ponteiro
@@ -194,13 +203,21 @@ arrayInitializer
 type
     : 'int'
     | 'float'
-    | 'void'
-    | 'char'
     | 'double'
+    | 'long double'
+    | 'char'
     | 'short'
     | 'long'
     | 'unsigned'
+    | 'unsigned char'
+    | 'unsigned int'
+    | 'unsigned short'
+    | 'unsigned long'
+    | 'long long'
+    | 'unsigned long long'
     | 'struct' IDENTIFIER
+    | 'union' IDENTIFIER
+    | 'void'
     ;
 
 // Expressões
@@ -254,11 +271,15 @@ unaryExpression
 // Expressões primárias
 primaryExpression
     : '(' expression ')'
-    | IDENTIFIER ('.' IDENTIFIER)* ('[' expression ']')* 
+    | IDENTIFIER ('[' expression ']')*
+    | expressionStruct
     | CONSTANT
     | STRING_LITERAL
-    | 'sizeof' '(' type ')'
-    //| chamadaStatement
+    ;
+
+// Expressão de acesso a membros de struct
+expressionStruct
+    : IDENTIFIER ('.' IDENTIFIER)*
     ;
 
 // Tokens
@@ -268,7 +289,6 @@ FLOAT: [0-9]+ '.' [0-9]+;
 CHAR: '\'' . '\'';
 IDENTIFIER : [a-zA-Z_][a-zA-Z0-9_]*;
 STRING_LITERAL : '"' (~["\\] | '\\' .)* '"';
-HEADER_FILE : [a-zA-Z_][a-zA-Z0-9_]* '.' [a-zA-Z_][a-zA-Z0-9_]*;
 WS : [ \t\r\n]+ -> skip;
-COMMENT : '/*' .*? '*/' -> skip;
+COMMENT : '/*' .*? '*/'  -> skip;
 LINE_COMMENT : '//' ~[\r\n]* -> skip;

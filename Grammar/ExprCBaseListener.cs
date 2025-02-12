@@ -240,6 +240,30 @@ public partial class ExprCBaseListener : IExprCListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitExpressionStatement([NotNull] ExprCParser.ExpressionStatementContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="ExprCParser.getsStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterGetsStatement([NotNull] ExprCParser.GetsStatementContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ExprCParser.getsStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitGetsStatement([NotNull] ExprCParser.GetsStatementContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ExprCParser.putsStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterPutsStatement([NotNull] ExprCParser.PutsStatementContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ExprCParser.putsStatement"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitPutsStatement([NotNull] ExprCParser.PutsStatementContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="ExprCParser.printfStatement"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -575,6 +599,18 @@ public partial class ExprCBaseListener : IExprCListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitPrimaryExpression([NotNull] ExprCParser.PrimaryExpressionContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ExprCParser.expressionStruct"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterExpressionStruct([NotNull] ExprCParser.ExpressionStructContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ExprCParser.expressionStruct"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitExpressionStruct([NotNull] ExprCParser.ExpressionStructContext context) { }
 
 	/// <inheritdoc/>
 	/// <remarks>The default implementation does nothing.</remarks>
